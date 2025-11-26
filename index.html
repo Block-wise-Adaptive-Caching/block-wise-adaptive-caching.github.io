@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block-wise Adaptive Caching for Accelerating Diffusion Policy</title>
+    <!-- Import fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        /* Header Section */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        .authors {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .venue {
+            font-weight: bold;
+            color: #d35400;
+        }
+
+        /* General Container Styles */
+        .section-box {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Abstract Styles */
+        .abstract-text {
+            text-align: justify;
+            font-size: 1.1em; /* Slightly larger for readability */
+        }
+        .highlight-list {
+            margin-top: 20px; 
+            list-style: none; 
+            padding-left: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start; /* Changed to left alignment */
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .highlight-list li {
+            font-weight: 500;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Section 1: Task & Hardware (Left Image, Right Text) */
+        .setup-container {
+            display: flex;
+            gap: 40px; /* Increased gap */
+            align-items: flex-start; /* Changed to top alignment to prevent overlapping issues */
+            flex-wrap: wrap;
+        }
+        .setup-image {
+            flex: 1;
+            min-width: 300px;
+            max-width: 50%; /* STRICT LIMIT: Prevents image from taking over the row */
+            text-align: center;
+        }
+        .setup-image img {
+            width: 100%; /* Force image to fit container width */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: block; /* Removes bottom spacing */
+        }
+        .setup-info {
+            flex: 1.2; /* Give text slightly more space */
+            min-width: 300px;
+        }
+        .specs-list {
+            list-style: none;
+            padding: 0;
+        }
+        .specs-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .specs-list li::before {
+            content: "•";
+            color: #007bff;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Section 2: Video Demos (2x2 Grid) */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .video-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+            }
+            .setup-image {
+                max-width: 100%; /* On mobile, let image take full width */
+            }
+        }
+        .video-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .video-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        video {
+            width: 100%;
+            border-radius: 4px;
+            background: #000;
+            aspect-ratio: 16/9; /* Maintain aspect ratio */
+        }
+        
+        /* Styles for bottom three data rows */
+        .metrics-table {
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.9em;
+            border-collapse: collapse;
+        }
+        .metrics-table td {
+            padding: 4px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .metrics-table tr:last-child td {
+            border-bottom: none;
+        }
+        .metric-label {
+            text-align: left;
+            font-weight: 500;
+            color: #666;
+            width: 40%;
+        }
+        .metric-value {
+            text-align: right;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Special Highlight Style: BAC */
+        .highlight-method {
+            font-style: italic;
+            font-weight: bold;
+            color: #dc3545; /* Red */
+        }
+        
+        /* Placeholder styles (can be removed in production) */
+        .placeholder-img {
+            background-color: #e9ecef;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Block-wise Adaptive Caching for Accelerating Diffusion Policy</h1>
+        <div class="authors">Anonymous Authors</div>
+        <div class="venue">Supplementary Material for Rebuttal</div>
+    </header>
+
+    <!-- Abstract Section -->
+    <div class="section-box">
+        <h2>Abstract</h2>
+        <div class="abstract-text">
+            <p style="margin-bottom: 15px;">
+                <strong>Diffusion Policy</strong> has revolutionized robotic control with its ability to model complex multimodal distributions, yet its slow inference speed remains a critical bottleneck for real-time deployment.
+            </p>
+            <p>
+                We introduce <strong>Block-wise Adaptive Caching (BAC)</strong>, a <em>training-free</em> acceleration framework designed specifically for Transformer-based Diffusion Policies. Unlike generic acceleration methods, BAC leverages the unique temporal redundancy of action features in robotic tasks. By intelligently caching and reusing features at the block level, BAC achieves <strong>lossless acceleration</strong>—enabling your robot to react faster without compromising precision.
+            </p>
+            
+            <ul class="highlight-list">
+                <li>🚀 <strong>Real-world Speedup:</strong> Boosts inference frequency from 8Hz → 45Hz for smooth control.</li>
+                <li>🎯 <strong>Lossless Performance:</strong> Maintains high success rates via fine-grained adaptive caching.</li>
+                <li>🔌 <strong>Plug-and-Play Design:</strong> No re-training or fine-tuning required.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Section 1: Task Setup & Hardware -->
+    <div class="section-box">
+        <h2>Experimental Setup</h2>
+        <div class="setup-container">
+            <!-- Left: Image -->
+            <div class="setup-image">
+                <!-- Please replace 'images/setup_fig.png' with your actual image path -->
+                <!-- Grey placeholder if no image is present -->
+                <div class="placeholder-img">
+                    [Insert Task/Robot Setup Image Here]
+                    <br>
+                    <img src="images/franka.jpg" onerror="this.style.display='none'" alt="Setup Figure">
+                </div>
+                <p style="font-size: 0.9em; color: #666; margin-top: 5px;">Figure 1: Real-world robot setup.</p>
+            </div>
+            
+            <!-- Right: Task and Hardware Description -->
+            <div class="setup-info">
+                <h3>Task Description</h3>
+                <p>
+                    We evaluate our method on the Pick-and-Release Task in a real-world setting. In this task, the robot should pick up a soft bag with a diameter of about 80% of the jaw width. This task greatly tests the real-time operating posture of the robotic arm and the timing of the gripper's opening and closing, as it is easy to knock over the bag. 
+                </p>
+                
+                <h3 style="margin-top: 20px;">Hardware Setup</h3>
+                <ul class="specs-list">
+                    <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D (48 GB)</li>
+                    <li><strong>Robot Arm:</strong> Franka Research 3</li>
+                    <li><strong>Camera:</strong> UGREEN CM717</li>
+                    <li><strong>Data:</strong> 150 epsiodes collected by Gello</li>
+                    <li><strong>Baseline Model:</strong> Transformer-based Diffusion Policy (DP-T)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Video Demos (2x2 Grid) -->
+    <div class="section-box">
+        <h2>Qualitative Comparisons</h2>
+        <p style="margin-bottom: 20px;">
+            Comparisons of different acceleration methods on the Pick-and-Release task. Note the significant speedup achieved by BAC while maintaining task success.
+        </p>
+        
+        <div class="video-grid">
+            <!-- Video 1 -->
+            <div class="video-card">
+                <video autoplay loop muted playsinline controls>
+                    <source src="videos/DP-s.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <table class="metrics-table">
+                    <tr>
+                        <td class="metric-label">Method:</td>
+                        <td class="metric-value">DDPM 100 steps</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">Inference Frequency:</td>
+                        <td class="metric-value">~7.8 Hz</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">End-to-End Latency:</td>
+                        <td class="metric-value">180 s(Failure)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="video-card">
+                <video autoplay loop muted playsinline controls>
+                    <source src="videos/DDPM30-s.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <table class="metrics-table">
+                    <tr>
+                        <td class="metric-label">Method:</td>
+                        <td class="metric-value">DDPM 30 steps</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">Inference Frequency:</td>
+                        <td class="metric-value">~19.4 Hz</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">End-to-End Latency:</td>
+                        <td class="metric-value">54 s</td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <!-- Video 3 -->
+            <div class="video-card">
+                <video autoplay loop muted playsinline controls>
+                    <source src="videos/DDIM50-s.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <table class="metrics-table">
+                    <tr>
+                        <td class="metric-label">Method:</td>
+                        <td class="metric-value">DDIM 50 steps</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">Inference Frequency:</td>
+                        <td class="metric-value">~15.6 Hz</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">End-to-End Latency:</td>
+                        <td class="metric-value">25 s</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Video 4 -->
+            <div class="video-card">
+                <video autoplay loop muted playsinline controls>
+                    <source src="videos/Uniform20-s.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <table class="metrics-table">
+                    <tr>
+                        <td class="metric-label">Method:</td>
+                        <td class="metric-value">Uniform S=20</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">Inference Frequency:</td>
+                        <td class="metric-value">~28.1 Hz</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">End-to-End Latency:</td>
+                        <td class="metric-value">52 s</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Video 5 (BAC - Highlighted) -->
+            <div class="video-card">
+                <video autoplay loop muted playsinline controls>
+                    <source src="videos/BAC-s.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <table class="metrics-table">
+                    <tr>
+                        <td class="metric-label">Method:</td>
+                        <td class="metric-value highlight-method">BAC S=7, k=3</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">Inference Frequency:</td>
+                        <td class="metric-value">~39.2 Hz</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">End-to-End Latency:</td>
+                        <td class="metric-value">15 s</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Video 6 (BAC - Highlighted) -->
+            <div class="video-card">
+                <video autoplay loop muted playsinline controls>
+                    <source src="videos/BAC5-s.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <table class="metrics-table">
+                    <tr>
+                        <td class="metric-label">Method:</td>
+                        <td class="metric-value highlight-method">BAC S=5, k=3</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">Inference Frequency:</td>
+                        <td class="metric-value">~45.1 Hz</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-label">End-to-End Latency:</td>
+                        <td class="metric-value">13 s</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
