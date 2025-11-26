@@ -59,7 +59,7 @@
         /* Abstract Styles */
         .abstract-text {
             text-align: justify;
-            font-size: 1.1em; /* Slightly larger for readability */
+            font-size: 1.1em; 
         }
         .highlight-list {
             margin-top: 20px; 
@@ -68,7 +68,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            justify-content: flex-start; /* Changed to left alignment */
+            justify-content: flex-start; 
             background: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
@@ -81,31 +81,34 @@
             gap: 8px;
         }
 
-        /* Section 1: Task & Hardware (Left Image, Right Text) */
+        /* Section 1: Task & Hardware (CSS Grid Layout - MORE ROBUST) */
         .setup-container {
-            display: flex;
-            gap: 40px; /* Increased gap */
-            align-items: flex-start; /* Changed to top alignment to prevent overlapping issues */
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Strictly 50% 50% split */
+            gap: 40px;
+            align-items: start;
         }
-        .setup-image {
-            flex: 1;
-            min-width: 300px;
-            max-width: 50%; /* STRICT LIMIT: Prevents image from taking over the row */
+        
+        .setup-image-container {
+            width: 100%;
             text-align: center;
+            /* Ensure the container doesn't overflow */
+            overflow: hidden; 
         }
-        .setup-image img {
-            width: 100%; /* Force image to fit container width */
-            height: auto; /* Maintain aspect ratio */
+
+        .setup-image-container img {
+            width: 100%;
+            height: auto;
             border-radius: 4px;
             border: 1px solid #ddd;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: block; /* Removes bottom spacing */
+            display: block;
         }
+
         .setup-info {
-            flex: 1.2; /* Give text slightly more space */
-            min-width: 300px;
+            /* No specific width needed, Grid handles it */
         }
+
         .specs-list {
             list-style: none;
             padding: 0;
@@ -126,17 +129,20 @@
         /* Section 2: Video Demos (2x2 Grid) */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            grid-template-columns: repeat(2, 1fr); 
             gap: 20px;
         }
+        
+        /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .video-grid {
-                grid-template-columns: 1fr; /* Single column on mobile */
+            .setup-container {
+                grid-template-columns: 1fr; /* Stack vertically on mobile */
             }
-            .setup-image {
-                max-width: 100%; /* On mobile, let image take full width */
+            .video-grid {
+                grid-template-columns: 1fr;
             }
         }
+
         .video-card {
             background: #fff;
             border: 1px solid #eee;
@@ -153,7 +159,7 @@
             width: 100%;
             border-radius: 4px;
             background: #000;
-            aspect-ratio: 16/9; /* Maintain aspect ratio */
+            aspect-ratio: 16/9; 
         }
         
         /* Styles for bottom three data rows */
@@ -188,17 +194,6 @@
             font-weight: bold;
             color: #dc3545; /* Red */
         }
-        
-        /* Placeholder styles (can be removed in production) */
-        .placeholder-img {
-            background-color: #e9ecef;
-            height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            border-radius: 4px;
-        }
     </style>
 </head>
 <body>
@@ -232,15 +227,10 @@
     <div class="section-box">
         <h2>Experimental Setup</h2>
         <div class="setup-container">
-            <!-- Left: Image -->
-            <div class="setup-image">
-                <!-- Please replace 'images/setup_fig.png' with your actual image path -->
-                <!-- Grey placeholder if no image is present -->
-                <div class="placeholder-img">
-                    [Insert Task/Robot Setup Image Here]
-                    <br>
-                    <img src="images/franka.jpg" onerror="this.style.display='none'" alt="Setup Figure">
-                </div>
+            <!-- Left: Image (Clean structure without placeholders) -->
+            <div class="setup-image-container">
+                <!-- Replace 'images/setup_fig.png' with your image file -->
+                <img src="images/franka.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Robot+Setup+Image'" alt="Real-world robot setup">
                 <p style="font-size: 0.9em; color: #666; margin-top: 5px;">Figure 1: Real-world robot setup.</p>
             </div>
             
@@ -288,7 +278,7 @@
                     </tr>
                     <tr>
                         <td class="metric-label">End-to-End Latency:</td>
-                        <td class="metric-value">180 s(Failure)</td>
+                        <td class="metric-value">180 s (Failure)</td>
                     </tr>
                 </table>
             </div>
