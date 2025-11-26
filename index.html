@@ -41,6 +41,42 @@
             color: #d35400;
         }
 
+        /* Header Buttons (Added) */
+        .header-links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #333;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95em;
+            transition: all 0.2s ease;
+            border: 1px solid #333;
+        }
+        
+        .btn-link:hover {
+            background-color: white;
+            color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-link svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
         /* General Container Styles */
         .section-box {
             background: white;
@@ -206,7 +242,8 @@
         <h1>Block-wise Adaptive Caching for Accelerating Diffusion Policy</h1>
         <div class="authors">Anonymous Authors</div>
         <div class="venue">Supplementary Material for Rebuttal</div>
-        <!-- Code Link Button -->
+
+        <!-- Code Link Button (Added) -->
         <div class="header-links">
             <a href="https://github.com/Block-wise-Adaptive-Caching/block-wise-adaptive-caching.github.io" class="btn-link" target="_blank">
                 <!-- GitHub Icon SVG -->
@@ -243,7 +280,7 @@
             <div class="setup-image-container">
                 <!-- Replace 'images/setup_fig.png' with your image file -->
                 <img src="images/franka.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Robot+Setup+Image'" alt="Real-world robot setup">
-                <p style="font-size: 0.9em; color: #666; margin-top: 5px;">Real-world robot setup.</p>
+                <p style="font-size: 0.9em; color: #666; margin-top: 5px;">Figure 1: Real-world robot setup.</p>
             </div>
             
             <!-- Right: Task and Hardware Description -->
