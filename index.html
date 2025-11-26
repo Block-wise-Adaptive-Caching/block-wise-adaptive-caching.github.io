@@ -120,7 +120,8 @@
         /* Section 1: Task & Hardware (CSS Grid Layout - MORE ROBUST) */
         .setup-container {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Strictly 50% 50% split */
+            /* Modified: Changed from 1fr 1fr to 2fr 3fr (40% Left, 60% Right) */
+            grid-template-columns: 2fr 3fr; 
             gap: 40px;
             align-items: start;
         }
@@ -130,10 +131,10 @@
             width: 100%;
             text-align: center;
             overflow: hidden;
-            margin-top: 10px; /* Slightly reduced top margin since we have two images now */
+            margin-top: 10px; 
             display: flex;
             flex-direction: column;
-            gap: 25px; /* Space between the two images */
+            gap: 25px; 
         }
 
         .setup-image-item img {
@@ -291,14 +292,14 @@
                 <!-- Image 1: Front View -->
                 <div class="setup-image-item">
                     <!-- Replace 'images/front_view.jpg' with your actual image -->
-                    <img src="images/front-view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Front+View+Image'" alt="Front view">
+                    <img src="images/front_view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Front+View+Image'" alt="Front view">
                     <p class="setup-caption">Front view</p>
                 </div>
                 
                 <!-- Image 2: Side View -->
                 <div class="setup-image-item">
                     <!-- Replace 'images/side_view.jpg' with your actual image -->
-                    <img src="images/side-view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Side+View+Image'" alt="Side view">
+                    <img src="images/side_view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Side+View+Image'" alt="Side view">
                     <p class="setup-caption">Side view</p>
                 </div>
             </div>
