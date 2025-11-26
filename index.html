@@ -92,8 +92,9 @@
         .setup-image-container {
             width: 100%;
             text-align: center;
-            /* Ensure the container doesn't overflow */
-            overflow: hidden; 
+            overflow: hidden;
+            /* Move image down by 40px */
+            margin-top: 40px; 
         }
 
         .setup-image-container img {
@@ -140,6 +141,9 @@
             }
             .video-grid {
                 grid-template-columns: 1fr;
+            }
+            .setup-image-container {
+                margin-top: 0; /* Remove margin on mobile for better flow */
             }
         }
 
@@ -212,7 +216,7 @@
                 <strong>Diffusion Policy</strong> has revolutionized robotic control with its ability to model complex multimodal distributions, yet its slow inference speed remains a critical bottleneck for real-time deployment.
             </p>
             <p>
-                We introduce <strong>Block-wise Adaptive Caching (BAC)</strong>, a <em>training-free</em> acceleration framework designed specifically for Transformer-based Diffusion Policies. Unlike generic acceleration methods, BAC leverages the unique temporal redundancy of action features in robotic tasks. By intelligently caching and reusing features at the block level, BAC achieves <strong>lossless acceleration</strong>—enabling your robot to react faster without compromising precision.
+                We introduce <strong>Block-wise Adaptive Caching (BAC)</strong>, a <em>training-free</em> acceleration framework designed specifically for Transformer-based Diffusion Policies. Unlike generic acceleration methods, BAC leverages the unique temporal redundancy of action features in robotic tasks. By adaptively caching and reusing features at the block level, BAC achieves <strong>lossless acceleration</strong>—enabling your robot to react faster and smoother for free!
             </p>
             
             <ul class="highlight-list">
@@ -231,7 +235,7 @@
             <div class="setup-image-container">
                 <!-- Replace 'images/setup_fig.png' with your image file -->
                 <img src="images/franka.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Robot+Setup+Image'" alt="Real-world robot setup">
-                <p style="font-size: 0.9em; color: #666; margin-top: 30px;">Real-world robot setup.</p>
+                <p style="font-size: 0.9em; color: #666; margin-top: 5px;">Real-world robot setup.</p>
             </div>
             
             <!-- Right: Task and Hardware Description -->
