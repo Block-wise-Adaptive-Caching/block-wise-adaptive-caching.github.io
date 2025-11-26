@@ -41,7 +41,7 @@
             color: #d35400;
         }
 
-        /* Header Buttons (Added) */
+        /* Header Buttons */
         .header-links {
             margin-top: 25px;
             display: flex;
@@ -117,52 +117,58 @@
             gap: 8px;
         }
 
-        /* Section 1: Task & Hardware (CSS Grid Layout - MORE ROBUST) */
+        /* Section 1: Task & Hardware (Layout: Images Top, Text Bottom) */
         .setup-container {
-            display: grid;
-            /* Modified: Changed from 1fr 1fr to 2fr 3fr (40% Left, 60% Right) */
-            grid-template-columns: 2fr 3fr; 
-            gap: 40px;
-            align-items: start;
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            gap: 30px;
         }
         
-        /* Modified: Vertical Stack for Images */
-        .setup-images-column {
+        /* Grid for side-by-side images on top */
+        .setup-images-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two equal columns */
+            gap: 30px;
             width: 100%;
+        }
+
+        .setup-image-item {
             text-align: center;
-            overflow: hidden;
-            margin-top: 10px; 
-            display: flex;
-            flex-direction: column;
-            gap: 25px; 
         }
 
         .setup-image-item img {
             width: 100%;
             height: auto;
+            max-height: 450px; /* Slightly increased max-height for top display */
+            object-fit: cover; 
             border-radius: 4px;
             border: 1px solid #ddd;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             display: block;
+            margin: 0 auto; 
         }
         
         .setup-caption {
             font-size: 0.95em; 
             color: #555; 
-            margin-top: 8px;
+            margin-top: 10px;
             font-weight: 500;
         }
 
         .setup-info {
-            /* No specific width needed, Grid handles it */
+            width: 100%;
         }
 
         .specs-list {
             list-style: none;
             padding: 0;
+            /* Make list two columns on wide screens */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
         }
         .specs-list li {
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             padding-left: 20px;
             position: relative;
         }
@@ -183,14 +189,14 @@
         
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .setup-container {
-                grid-template-columns: 1fr; /* Stack vertically on mobile */
+            .setup-images-row {
+                grid-template-columns: 1fr; /* Stack images on mobile */
             }
             .video-grid {
                 grid-template-columns: 1fr;
             }
-            .setup-images-column {
-                margin-top: 0; /* Remove margin on mobile for better flow */
+            .specs-list {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -254,7 +260,7 @@
         <div class="authors">Anonymous Authors</div>
         <div class="venue">Supplementary Material for Rebuttal</div>
 
-        <!-- Code Link Button (Added) -->
+        <!-- Code Link Button -->
         <div class="header-links">
             <a href="https://anonymous.4open.science/r/Block-wise_Adaptive_Caching-1265" class="btn-link" target="_blank">
                 <!-- GitHub Icon SVG -->
@@ -287,31 +293,30 @@
     <div class="section-box">
         <h2>Experimental Setup</h2>
         <div class="setup-container">
-            <!-- Left: Image Column (Modified to vertical stack) -->
-            <div class="setup-images-column">
+            
+            <!-- Top: Side-by-Side Images -->
+            <div class="setup-images-row">
                 <!-- Image 1: Front View -->
                 <div class="setup-image-item">
-                    <!-- Replace 'images/front_view.jpg' with your actual image -->
                     <img src="images/front_view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Front+View+Image'" alt="Front view">
                     <p class="setup-caption">Front view</p>
                 </div>
                 
                 <!-- Image 2: Side View -->
                 <div class="setup-image-item">
-                    <!-- Replace 'images/side_view.jpg' with your actual image -->
                     <img src="images/side_view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Side+View+Image'" alt="Side view">
                     <p class="setup-caption">Side view</p>
                 </div>
             </div>
-            
-            <!-- Right: Task and Hardware Description -->
+
+            <!-- Bottom: Task and Hardware Description -->
             <div class="setup-info">
                 <h3>Task Description</h3>
-                <p>
+                <p style="margin-bottom: 20px;">
                     We evaluate our method on the Pick-and-Release task in a real-world setting. In this task, the robot is required to grasp a soft bag whose diameter is approximately 80% of the gripper’s jaw width. This scenario poses a challenge to the robot’s real-time manipulation capabilities, particularly in maintaining a stable operating posture and precisely coordinating the timing of the gripper’s opening and closing in high speed, as the bag is prone to toppling during execution.
                 </p>
                 
-                <h3 style="margin-top: 20px;">Hardware Setup</h3>
+                <h3>Hardware Setup</h3>
                 <ul class="specs-list">
                     <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D (48 GB)</li>
                     <li><strong>Robot Arm:</strong> Franka Research 3</li>
@@ -320,6 +325,7 @@
                     <li><strong>Baseline Model:</strong> Transformer-based Diffusion Policy </li>
                 </ul>
             </div>
+
         </div>
     </div>
 
