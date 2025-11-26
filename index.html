@@ -125,21 +125,31 @@
             align-items: start;
         }
         
-        .setup-image-container {
+        /* Modified: Vertical Stack for Images */
+        .setup-images-column {
             width: 100%;
             text-align: center;
             overflow: hidden;
-            /* Move image down by 35px */
-            margin-top: 35px; 
+            margin-top: 10px; /* Slightly reduced top margin since we have two images now */
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* Space between the two images */
         }
 
-        .setup-image-container img {
+        .setup-image-item img {
             width: 100%;
             height: auto;
             border-radius: 4px;
             border: 1px solid #ddd;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             display: block;
+        }
+        
+        .setup-caption {
+            font-size: 0.95em; 
+            color: #555; 
+            margin-top: 8px;
+            font-weight: 500;
         }
 
         .setup-info {
@@ -178,7 +188,7 @@
             .video-grid {
                 grid-template-columns: 1fr;
             }
-            .setup-image-container {
+            .setup-images-column {
                 margin-top: 0; /* Remove margin on mobile for better flow */
             }
         }
@@ -276,11 +286,21 @@
     <div class="section-box">
         <h2>Experimental Setup</h2>
         <div class="setup-container">
-            <!-- Left: Image (Clean structure without placeholders) -->
-            <div class="setup-image-container">
-                <!-- Replace 'images/setup_fig.png' with your image file -->
-                <img src="images/franka.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Robot+Setup+Image'" alt="Real-world robot setup">
-                <p style="font-size: 0.9em; color: #666; margin-top: 5px;">Figure 1: Real-world robot setup.</p>
+            <!-- Left: Image Column (Modified to vertical stack) -->
+            <div class="setup-images-column">
+                <!-- Image 1: Front View -->
+                <div class="setup-image-item">
+                    <!-- Replace 'images/front_view.jpg' with your actual image -->
+                    <img src="images/front-view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Front+View+Image'" alt="Front view">
+                    <p class="setup-caption">Front view</p>
+                </div>
+                
+                <!-- Image 2: Side View -->
+                <div class="setup-image-item">
+                    <!-- Replace 'images/side_view.jpg' with your actual image -->
+                    <img src="images/side-view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Side+View+Image'" alt="Side view">
+                    <p class="setup-caption">Side view</p>
+                </div>
             </div>
             
             <!-- Right: Task and Hardware Description -->
