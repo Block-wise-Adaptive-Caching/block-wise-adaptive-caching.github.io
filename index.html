@@ -151,13 +151,55 @@
         /* Abstract & Setup Styles */
         .abstract-text { text-align: justify; font-size: 1.1em; font-family: 'Roboto', sans-serif; line-height: 1.7; }
         .highlight-list {
-            margin-top: 20px; list-style: none; padding-left: 0;
-            display: flex; flex-wrap: wrap; gap: 20px;
-            background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
-            padding: 24px; border-radius: 10px;
-            border: 1px solid #e8ecf0;
+            margin-top: 30px !important; 
+            list-style: none !important; 
+            padding-left: 0 !important;
+            display: grid !important; 
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 24px !important;
+            background: transparent !important;
+            padding: 0 !important; 
+            border-radius: 0 !important;
+            border: none !important;
         }
-        .highlight-list li { font-weight: 500; color: #475569; display: flex; align-items: center; gap: 8px; }
+        .highlight-list li { 
+            font-weight: 400 !important; 
+            color: #64748b !important; 
+            display: block !important; 
+            line-height: 1.6 !important;
+            background: white !important;
+            padding: 28px 24px !important;
+            border-radius: 12px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.3s ease !important;
+            text-align: left !important;
+        }
+        .highlight-list li:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08) !important;
+            border-color: #cbd5e1 !important;
+        }
+        .highlight-list li .feature-header {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            margin-bottom: 10px !important;
+        }
+        .highlight-list li .emoji {
+            font-size: 1.8em !important;
+            line-height: 1 !important;
+            flex-shrink: 0 !important;
+        }
+        .highlight-list li strong {
+            color: #1e293b !important;
+            font-weight: 600 !important;
+            font-size: 1.05em !important;
+        }
+        .highlight-list li .feature-desc {
+            color: #64748b !important;
+            line-height: 1.6 !important;
+        }
 
         .setup-container { display: flex; flex-direction: column; gap: 30px; }
         .setup-images-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; }
@@ -346,9 +388,27 @@
                     We introduce <strong>Block-wise Adaptive Caching (BAC)</strong>, a <em>training-free</em> acceleration framework designed specifically for Transformer-based Diffusion Policies. Unlike generic acceleration methods, BAC leverages the unique temporal redundancy of action features in robotic tasks. By adaptively caching and reusing features at the block level, BAC achieves <strong>lossless acceleration</strong>—enabling your robot to react faster and smoother for free!
                 </p>
                 <ul class="highlight-list">
-                    <li>🚀 <strong>Real-world Speedup:</strong> Boosts inference frequency from 8Hz → 45Hz for smooth control.</li>
-                    <li>🎯 <strong>Lossless Performance:</strong> Maintains high success rates via fine-grained adaptive caching.</li>
-                    <li>🔌 <strong>Plug-and-Play Design:</strong> No re-training or fine-tuning required.</li>
+                    <li>
+                        <div class="feature-header">
+                            <span class="emoji">🚀</span>
+                            <strong>Real-world Speedup</strong>
+                        </div>
+                        <div class="feature-desc">Boosts inference frequency from 8Hz → 45Hz for smooth control.</div>
+                    </li>
+                    <li>
+                        <div class="feature-header">
+                            <span class="emoji">🎯</span>
+                            <strong>Lossless Performance</strong>
+                        </div>
+                        <div class="feature-desc">Maintains high success rates via fine-grained adaptive caching.</div>
+                    </li>
+                    <li>
+                        <div class="feature-header">
+                            <span class="emoji">🔌</span>
+                            <strong>Plug-and-Play Design</strong>
+                        </div>
+                        <div class="feature-desc">Just plug in one line of code without requiring any re-training.</div>
+                    </li>
                 </ul>
             </div>
         </div>
