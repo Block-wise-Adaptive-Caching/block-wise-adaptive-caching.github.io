@@ -149,13 +149,15 @@
         }
 
         /* Abstract & Setup Styles */
-        .abstract-text { text-align: justify; font-size: 1.1em; font-family: 'Roboto', sans-serif; }
+        .abstract-text { text-align: justify; font-size: 1.1em; font-family: 'Roboto', sans-serif; line-height: 1.7; }
         .highlight-list {
             margin-top: 20px; list-style: none; padding-left: 0;
             display: flex; flex-wrap: wrap; gap: 20px;
-            background: #f8f9fa; padding: 20px; border-radius: 8px;
+            background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
+            padding: 24px; border-radius: 10px;
+            border: 1px solid #e8ecf0;
         }
-        .highlight-list li { font-weight: 500; color: #2c3e50; display: flex; align-items: center; gap: 8px; }
+        .highlight-list li { font-weight: 500; color: #475569; display: flex; align-items: center; gap: 8px; }
 
         .setup-container { display: flex; flex-direction: column; gap: 30px; }
         .setup-images-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; }
@@ -173,64 +175,120 @@
         @media (min-width: 768px) { .video-grid-modern { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         .video-card-modern {
             background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb;
-            transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
         }
-        .video-card-modern:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .card-highlight { border: 2px solid #3b82f6; background: #eff6ff; position: relative; }
+        .video-card-modern:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08); }
+        .card-highlight { 
+            border: 2px solid #7c9fd8; 
+            background: linear-gradient(135deg, #f8fbff 0%, #f0f6ff 100%); 
+            position: relative; 
+        }
         .card-badge {
-            position: absolute; top: 10px; right: 10px; background: #3b82f6; color: white;
-            padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; z-index: 10;
+            position: absolute; top: 12px; right: 12px; 
+            background: linear-gradient(135deg, #7c9fd8 0%, #6b8ec7 100%);
+            color: white;
+            padding: 5px 14px; border-radius: 9999px; 
+            font-size: 0.7rem; font-weight: 700; 
+            z-index: 10;
+            box-shadow: 0 2px 6px rgba(107, 142, 199, 0.3);
         }
 
         /* --- VIZ STYLES --- */
         .viz-grid-container {
             display: grid;
             grid-template-columns: repeat(16, 1fr);
-            gap: 4px; /* Tighter gap */
-            padding: 8px;
-            background: #f8fafc;
-            border-radius: 6px;
+            gap: 5px;
+            padding: 12px;
+            background: linear-gradient(135deg, #fafbfc 0%, #f0f4f8 100%);
+            border-radius: 8px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
         }
         
         .block-cell {
             aspect-ratio: 1 / 1;
-            border-radius: 3px;
-            transition: all 0.2s ease;
+            border-radius: 4px;
+            transition: all 0.25s ease;
             position: relative;
         }
         
-        .block-cache { background-color: #e2e8f0; border: 1px solid #cbd5e1; }
-        .block-update { background-color: #2563eb; border: 1px solid #1d4ed8; transform: scale(1.05); box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); z-index: 5; }
-        .block-error { background-color: #fee2e2; border: 2px solid #ef4444; position: relative; }
-        .block-corrected { background-color: #22c55e; border: 2px solid #15803d; box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); z-index: 10; }
+        .block-cache { 
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+        .block-update { 
+            background: linear-gradient(135deg, #7c9fd8 0%, #6b8ec7 100%);
+            border: 1px solid #5a7db6;
+            transform: scale(1.04);
+            box-shadow: 0 2px 6px rgba(107, 142, 199, 0.25);
+            z-index: 5;
+        }
+        .block-error { 
+            background: linear-gradient(135deg, #ffd4d4 0%, #ffb8b8 100%);
+            border: 1.5px solid #ff9999;
+            position: relative;
+            animation: pulse-error 2s ease-in-out infinite;
+        }
+        .block-corrected { 
+            background: linear-gradient(135deg, #a8e6cf 0%, #8dd4b5 100%);
+            border: 1.5px solid #6ec49f;
+            box-shadow: 0 0 8px rgba(141, 212, 181, 0.35);
+            z-index: 10;
+        }
+        
+        @keyframes pulse-error {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
 
         /* Bubbling Animation */
         @keyframes float-up {
-            0% { transform: translateY(0) scale(0.5); opacity: 0.8; }
-            100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+            0% { 
+                transform: translateY(0) scale(0.5); 
+                opacity: 0.8; 
+            }
+            50% {
+                transform: translateY(-15px) scale(0.9);
+                opacity: 0.6;
+            }
+            100% { 
+                transform: translateY(-30px) scale(1.1); 
+                opacity: 0; 
+            }
         }
         
         .bubble {
             position: absolute;
             top: 50%; left: 50%;
-            width: 12px; height: 12px;
-            background-color: #4ade80;
+            width: 10px; height: 10px;
+            background: radial-gradient(circle at 35% 35%, #b8e6d5, #8dd4b5);
             border-radius: 50%;
             pointer-events: none;
             transform: translate(-50%, -50%);
             animation: float-up 1.2s ease-out forwards;
-            box-shadow: 0 0 4px rgba(74, 222, 128, 0.6);
+            box-shadow: 0 0 4px rgba(141, 212, 181, 0.5);
             z-index: 20;
         }
 
         /* Status Box */
         .status-box {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 14px; border-radius: 6px; margin-bottom: 8px;
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 10px;
             font-size: 0.85rem; font-weight: 600;
+            transition: all 0.2s ease;
         }
-        .status-box-success { background-color: #ecfdf5; border: 1px solid #d1fae5; color: #065f46; }
-        .status-box-fail { background-color: #fef2f2; border: 1px solid #fee2e2; color: #991b1b; }
+        .status-box-success { 
+            background: linear-gradient(135deg, #f0f9f4 0%, #e3f5e9 100%);
+            border: 1px solid #c3e6cb;
+            color: #2d6a4f;
+            box-shadow: 0 1px 3px rgba(45, 106, 79, 0.08);
+        }
+        .status-box-fail { 
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+            border: 1px solid #ffd4d4;
+            color: #b85450;
+            box-shadow: 0 1px 3px rgba(184, 84, 80, 0.08);
+        }
 
     </style>
 </head>
@@ -244,9 +302,9 @@
                     <span class="text-xl font-bold tracking-tight text-slate-900">BAC <span class="text-slate-400 font-normal">| Project Page</span></span>
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#abstract" class="text-slate-600 hover:text-blue-600 transition-colors">Abstract</a>
-                    <a href="#method" class="text-slate-600 hover:text-blue-600 transition-colors">Method</a>
-                    <a href="#setup" class="text-slate-600 hover:text-blue-600 transition-colors">Experiments</a>
+                    <a href="#abstract" class="text-slate-600 hover:text-slate-800 transition-colors font-medium">Abstract</a>
+                    <a href="#method" class="text-slate-600 hover:text-slate-800 transition-colors font-medium">Method</a>
+                    <a href="#setup" class="text-slate-600 hover:text-slate-800 transition-colors font-medium">Experiments</a>
                 </div>
             </div>
         </div>
@@ -258,7 +316,7 @@
                 <span class="block">Block-wise Adaptive Caching</span>
                 <span class="block text-3xl sm:text-4xl text-slate-500 mt-2">for Accelerating Diffusion Policy</span>
             </h1>
-            <div class="mt-2 text-sm text-blue-600 font-semibold uppercase tracking-wide">Under Review at ICLR 2026</div>
+            <div class="mt-2 text-sm font-semibold uppercase tracking-wide" style="color: #6b8ec7;">Under Review at ICLR 2026</div>
             
             <!-- UPDATED BUTTON SECTION -->
             <div class="mt-12 flex justify-center gap-5 flex-wrap">
@@ -309,14 +367,14 @@
             <div class="bg-white rounded-xl border border-slate-200 overflow-hidden mb-8 shadow-sm">
                 
                 <!-- Controls -->
-                <div class="p-3 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50">
+                <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4" style="background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);">
                     <h3 class="!mb-0 !text-sm font-bold text-slate-700 uppercase tracking-wider pl-2">
-                        <i class="fa-solid fa-sliders mr-2"></i>Interactive Demo
+                        <i class="fa-solid fa-sliders mr-2 text-slate-500"></i>Interactive Demo
                     </h3>
-                    <div class="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
-                        <button onclick="runSimulation('uniform')" id="btn-uniform" class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors hover:bg-slate-50 text-slate-600">Uniform</button>
-                        <button onclick="runSimulation('acs')" id="btn-acs" class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors hover:bg-slate-50 text-slate-600">ACS</button>
-                        <button onclick="runSimulation('bac')" id="btn-bac" class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors bg-blue-600 text-white shadow-md">ACS + BUA</button>
+                    <div class="flex bg-white rounded-lg p-1.5 border border-slate-200 shadow-sm">
+                        <button onclick="runSimulation('uniform')" id="btn-uniform" class="px-5 py-2 rounded-md text-sm font-semibold transition-all hover:bg-slate-50 text-slate-600">Uniform</button>
+                        <button onclick="runSimulation('acs')" id="btn-acs" class="px-5 py-2 rounded-md text-sm font-semibold transition-all hover:bg-slate-50 text-slate-600">ACS</button>
+                        <button onclick="runSimulation('bac')" id="btn-bac" class="px-5 py-2 rounded-md text-sm font-semibold transition-all bg-gradient-to-r from-slate-600 to-slate-500 text-white shadow-md">ACS + BUA</button>
                     </div>
                 </div>
                 
@@ -347,16 +405,28 @@
                             
                             <!-- Legend (Moved Here!) -->
                             <div class="mt-auto border-t border-slate-100 pt-3">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Legend</p>
-                                <div class="grid grid-cols-1 gap-2 text-xs font-medium text-slate-600">
-                                    <div class="flex items-center"><div class="w-3 h-3 bg-blue-600 rounded mr-2 border border-blue-700"></div> Updated Features</div>
-                                    <div class="flex items-center"><div class="w-3 h-3 bg-slate-200 rounded mr-2 border border-slate-300"></div> Skipped Features</div>
-                                    <div class="flex items-center"><div class="w-3 h-3 bg-red-100 border border-red-500 rounded mr-2"></div> Error Surge</div>
-                                    <div class="flex items-center"><div class="w-3 h-3 bg-green-500 border border-green-700 rounded mr-2"></div> Error Correction</div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Legend</p>
+                                <div class="grid grid-cols-1 gap-2.5 text-xs font-medium text-slate-700">
+                                    <div class="flex items-center">
+                                        <div class="w-4 h-4 rounded mr-2.5 border border-slate-400" style="background: linear-gradient(135deg, #7c9fd8 0%, #6b8ec7 100%);"></div>
+                                        <span>Updated Features</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-4 h-4 rounded mr-2.5 border border-slate-300" style="background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);"></div>
+                                        <span>Cached Features</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-4 h-4 border border-red-300 rounded mr-2.5" style="background: linear-gradient(135deg, #ffd4d4 0%, #ffb8b8 100%);"></div>
+                                        <span>Error Surge</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-4 h-4 border border-green-400 rounded mr-2.5" style="background: linear-gradient(135deg, #a8e6cf 0%, #8dd4b5 100%);"></div>
+                                        <span>Error Correction</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div id="viz-status" class="mt-3 text-[10px] font-mono text-blue-600 hidden text-center">
+                            <div id="viz-status" class="mt-3 text-[10px] font-mono hidden text-center" style="color: #6b8ec7;">
                                 Simulating...
                             </div>
                         </div>
@@ -385,8 +455,8 @@
                 <!-- ADDED TASK DESCRIPTION -->
                 <div class="setup-info">
                     <h3>Task Description</h3>
-                    <p style="margin-bottom: 20px;">
-                        We evaluate our method on the Pick-and-Release task in a real-world setting. In this task, the robot is required to grasp a soft bag whose diameter is approximately 80% of the gripper’s jaw width. This scenario poses a challenge to the robot’s real-time manipulation capabilities, particularly in maintaining a stable operating posture and precisely coordinating the timing of the gripper’s opening and closing in high speed, as the bag is prone to toppling during execution.
+                    <p style="margin-bottom: 20px; line-height: 1.7;">
+                        We evaluate our method on the Pick-and-Release task in a real-world setting. In this task, the robot is required to grasp a soft bag whose diameter is approximately 80% of the gripper's jaw width. This scenario poses a challenge to the robot's real-time manipulation capabilities, particularly in maintaining a stable operating posture and precisely coordinating the timing of the gripper's opening and closing in high speed, as the bag is prone to toppling during execution.
                     </p>
                 </div>
 
@@ -395,7 +465,7 @@
                     <ul class="specs-list">
                         <li><strong>Robot Arm:</strong> Franka Research 3</li>
                         <li><strong>Camera:</strong> UGREEN CM717</li>
-                        <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D 48 GB</li>
+                        <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D</li>
                     </ul>
                 </div>
             </div>
@@ -403,91 +473,91 @@
 
         <div class="section-box">
             <h2>Qualitative Comparisons</h2>
-            <p style="margin-bottom: 25px;">
-                Comparisons of different acceleration methods on the Pick-and-Release task. <span class="text-blue-600 font-semibold">BAC methods achieve high frequency with low latency.</span>
+            <p style="margin-bottom: 25px; line-height: 1.7;">
+                Comparisons of different acceleration methods on the Pick-and-Release task. <span style="color: #6b8ec7; font-weight: 600;">BAC achieves high inference frequency with low end-to-end latency.</span>
             </p>
             
             <div class="video-grid-modern">
                 <!-- Video 1 -->
                 <div class="video-card-modern">
-                    <video autoplay loop muted playsinline controls><source src="videos/DP-s.mp4" type="video/mp4"></video>
-                    <div class="p-4 bg-white">
+                    <video autoplay loop muted playsinline controls style="border-radius: 12px 12px 0 0;"><source src="videos/DP-s.mp4" type="video/mp4"></video>
+                    <div class="p-5 bg-white">
                         <div class="flex justify-between items-center mb-3">
                             <h4 class="text-base font-bold text-slate-800 m-0">DDPM 100 steps</h4>
-                            <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-md font-medium">Failure</span>
+                            <span class="text-xs px-3 py-1 rounded-full font-semibold" style="background: linear-gradient(135deg, #ffe8e8 0%, #ffd4d4 100%); color: #b85450;">Failure</span>
                         </div>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">7.8 Hz</span></div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 17%"></div></div>
-                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">180 s</span></div>
-                             <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-red-400 h-1.5 rounded-full" style="width: 100%"></div></div>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Frequency</span> <span class="font-mono text-slate-900 font-semibold">7.8 Hz</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-slate-300 to-slate-400 h-2 rounded-full transition-all" style="width: 17%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Latency</span> <span class="font-mono text-slate-900 font-semibold">180 s</span></div>
+                             <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-red-300 to-red-400 h-2 rounded-full transition-all" style="width: 100%"></div></div>
                         </div>
                     </div>
                 </div>
                  <!-- Video 2 -->
                 <div class="video-card-modern">
-                    <video autoplay loop muted playsinline controls><source src="videos/DDPM30-s.mp4" type="video/mp4"></video>
-                    <div class="p-4 bg-white">
+                    <video autoplay loop muted playsinline controls style="border-radius: 12px 12px 0 0;"><source src="videos/DDPM30-s.mp4" type="video/mp4"></video>
+                    <div class="p-5 bg-white">
                         <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-slate-800 m-0">DDPM 30 steps</h4></div>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">19.4 Hz</span></div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 43%"></div></div>
-                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">54 s</span></div>
-                             <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 30%"></div></div>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Frequency</span> <span class="font-mono text-slate-900 font-semibold">19.4 Hz</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-slate-300 to-slate-400 h-2 rounded-full transition-all" style="width: 43%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Latency</span> <span class="font-mono text-slate-900 font-semibold">54 s</span></div>
+                             <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-slate-300 to-slate-400 h-2 rounded-full transition-all" style="width: 30%"></div></div>
                         </div>
                     </div>
                 </div>
                  <!-- Video 3 -->
                 <div class="video-card-modern">
-                    <video autoplay loop muted playsinline controls><source src="videos/DDIM50-s.mp4" type="video/mp4"></video>
-                    <div class="p-4 bg-white">
+                    <video autoplay loop muted playsinline controls style="border-radius: 12px 12px 0 0;"><source src="videos/DDIM50-s.mp4" type="video/mp4"></video>
+                    <div class="p-5 bg-white">
                         <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-slate-800 m-0">DDIM 50 steps</h4></div>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">15.6 Hz</span></div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 34%"></div></div>
-                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">25 s</span></div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 14%"></div></div>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Frequency</span> <span class="font-mono text-slate-900 font-semibold">15.6 Hz</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-slate-300 to-slate-400 h-2 rounded-full transition-all" style="width: 34%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Latency</span> <span class="font-mono text-slate-900 font-semibold">25 s</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-slate-300 to-slate-400 h-2 rounded-full transition-all" style="width: 14%"></div></div>
                         </div>
                     </div>
                 </div>
                 <!-- Video 4 -->
                 <div class="video-card-modern">
-                    <video autoplay loop muted playsinline controls><source src="videos/Uniform20-s.mp4" type="video/mp4"></video>
-                    <div class="p-4 bg-white">
+                    <video autoplay loop muted playsinline controls style="border-radius: 12px 12px 0 0;"><source src="videos/Uniform20-s.mp4" type="video/mp4"></video>
+                    <div class="p-5 bg-white">
                         <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-slate-800 m-0">Uniform S=20</h4></div>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">28.1 Hz</span></div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 62%"></div></div>
-                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">52 s</span></div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 28%"></div></div>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Frequency</span> <span class="font-mono text-slate-900 font-semibold">28.1 Hz</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-slate-300 to-slate-400 h-2 rounded-full transition-all" style="width: 62%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Latency</span> <span class="font-mono text-slate-900 font-semibold">52 s</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-slate-300 to-slate-400 h-2 rounded-full transition-all" style="width: 28%"></div></div>
                         </div>
                     </div>
                 </div>
                  <!-- Video 5 -->
                 <div class="video-card-modern card-highlight">
                     <div class="card-badge">Ours</div>
-                    <video autoplay loop muted playsinline controls><source src="videos/BAC-s.mp4" type="video/mp4"></video>
-                    <div class="p-4 bg-white/50">
-                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-blue-700 m-0">BAC S=7</h4></div>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">39.2 Hz</span></div>
-                            <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-blue-600 h-1.5 rounded-full" style="width: 87%"></div></div>
-                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">15 s</span></div>
-                            <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-blue-600 h-1.5 rounded-full" style="width: 8%"></div></div>
+                    <video autoplay loop muted playsinline controls style="border-radius: 12px 12px 0 0;"><source src="videos/BAC-s.mp4" type="video/mp4"></video>
+                    <div class="p-5 bg-white/80">
+                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold m-0" style="color: #6b8ec7;">BAC S=7</h4></div>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Frequency</span> <span class="font-mono text-slate-900 font-semibold">39.2 Hz</span></div>
+                            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full transition-all" style="width: 87%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Latency</span> <span class="font-mono text-slate-900 font-semibold">15 s</span></div>
+                            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full transition-all" style="width: 8%"></div></div>
                         </div>
                     </div>
                 </div>
                  <!-- Video 6 -->
                 <div class="video-card-modern card-highlight">
-                    <div class="card-badge">Ours (Best)</div>
-                    <video autoplay loop muted playsinline controls><source src="videos/BAC5-s.mp4" type="video/mp4"></video>
-                    <div class="p-4 bg-white/50">
-                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-blue-700 m-0">BAC S=5</h4></div>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">45.1 Hz</span></div>
-                            <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-blue-600 h-1.5 rounded-full" style="width: 100%"></div></div>
-                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">13 s</span></div>
-                            <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-blue-600 h-1.5 rounded-full" style="width: 7%"></div></div>
+                    <div class="card-badge">Ours (Fastest)</div>
+                    <video autoplay loop muted playsinline controls style="border-radius: 12px 12px 0 0;"><source src="videos/BAC5-s.mp4" type="video/mp4"></video>
+                    <div class="p-5 bg-white/80">
+                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold m-0" style="color: #6b8ec7;">BAC S=5</h4></div>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Frequency</span> <span class="font-mono text-slate-900 font-semibold">45.1 Hz</span></div>
+                            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full transition-all" style="width: 100%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span class="font-medium">Latency</span> <span class="font-mono text-slate-900 font-semibold">13 s</span></div>
+                            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full transition-all" style="width: 7%"></div></div>
                         </div>
                     </div>
                 </div>
@@ -561,13 +631,13 @@
 
         function runSimulation(mode) {
             document.querySelectorAll('button[id^="btn-"]').forEach(b => {
-                b.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-colors hover:bg-slate-50 text-slate-600";
+                b.className = "px-5 py-2 rounded-md text-sm font-semibold transition-all hover:bg-slate-50 text-slate-600";
             });
             const activeBtn = document.getElementById(`btn-${mode}`);
             if (mode === 'bac') {
-                activeBtn.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-colors bg-blue-600 text-white shadow-md";
+                activeBtn.className = "px-5 py-2 rounded-md text-sm font-semibold transition-all bg-gradient-to-r from-slate-600 to-slate-500 text-white shadow-md";
             } else {
-                activeBtn.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-colors bg-slate-800 text-white shadow-md";
+                activeBtn.className = "px-5 py-2 rounded-md text-sm font-semibold transition-all bg-gradient-to-r from-slate-600 to-slate-500 text-white shadow-md";
             }
             
             clearGrid();
