@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Block-wise Adaptive Caching for Accelerating Diffusion Policy</title>
     
-    <!-- 1. Tailwind CSS (For Header & Interactive Components) -->
+    <!-- 1. Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- 2. Fonts -->
@@ -17,13 +17,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- GLOBAL & NEW STYLES (Tailwind Helpers) --- */
+        /* --- GLOBAL STYLES --- */
         body {
             background-color: #f8f9fa; 
             scroll-behavior: smooth;
         }
         
-        /* Header Buttons */
+        /* Buttons */
         .btn-primary {
             @apply inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-slate-900 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200;
         }
@@ -31,7 +31,7 @@
             @apply inline-flex items-center px-6 py-3 border border-slate-300 text-base font-medium rounded-full text-slate-700 bg-white hover:bg-slate-50 transition-all duration-200;
         }
 
-        /* --- LEGACY STYLES (Unified Section Layout) --- */
+        /* --- LEGACY SECTION STYLES (Card Layout) --- */
         .legacy-section {
             font-family: 'Roboto', sans-serif;
             line-height: 1.6;
@@ -41,15 +41,13 @@
             padding: 0 20px;
         }
 
-        /* Uniform Card Style for ALL Sections */
         .section-box {
             background: white;
             padding: 30px;
             margin-bottom: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            /* Ensure Tailwind content inside looks okay */
-            @apply font-sans; 
+            font-family: 'Inter', sans-serif;
         }
 
         .legacy-section h2 {
@@ -70,97 +68,95 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        /* Abstract Styles */
-        .abstract-text { text-align: justify; font-size: 1.1em; }
+        /* Abstract & Setup Styles */
+        .abstract-text { text-align: justify; font-size: 1.1em; font-family: 'Roboto', sans-serif; }
         .highlight-list {
             margin-top: 20px; list-style: none; padding-left: 0;
             display: flex; flex-wrap: wrap; gap: 20px;
             background: #f8f9fa; padding: 20px; border-radius: 8px;
         }
-        .highlight-list li {
-            font-weight: 500; color: #2c3e50; display: flex; align-items: center; gap: 8px;
-        }
+        .highlight-list li { font-weight: 500; color: #2c3e50; display: flex; align-items: center; gap: 8px; }
 
-        /* Setup & Hardware */
         .setup-container { display: flex; flex-direction: column; gap: 30px; }
         .setup-images-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; }
-        .setup-image-item { text-align: center; }
         .setup-image-item img {
             width: 100%; height: auto; max-height: 450px; object-fit: cover;
-            border-radius: 4px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: block; margin: 0 auto;
+            border-radius: 4px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: block; margin: 0 auto;
         }
-        .setup-caption { font-size: 0.95em; color: #555; margin-top: 10px; font-weight: 500; }
-        .specs-list {
-            list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px;
-        }
+        .setup-caption { font-size: 0.95em; color: #555; margin-top: 10px; font-weight: 500; text-align: center; }
+        .specs-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
         .specs-list li { margin-bottom: 5px; padding-left: 20px; position: relative; }
         .specs-list li::before { content: "•"; color: #007bff; font-weight: bold; position: absolute; left: 0; }
 
-        /* Video Grid (New Modern Style) */
-        .video-grid-modern { 
-            display: grid; 
-            grid-template-columns: repeat(1, minmax(0, 1fr)); 
-            gap: 2rem; 
+        /* Video Grid */
+        .video-grid-modern { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 2rem; }
+        @media (min-width: 768px) { .video-grid-modern { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .video-card-modern {
+            background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb;
+            transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
-        @media (min-width: 768px) {
-            .video-grid-modern { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .video-card-modern:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .card-highlight { border: 2px solid #3b82f6; background: #eff6ff; position: relative; }
+        .card-badge {
+            position: absolute; top: 10px; right: 10px; background: #3b82f6; color: white;
+            padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; z-index: 10;
         }
 
-        .video-card-modern {
-            background: #fff; 
-            border-radius: 12px; 
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-        .video-card-modern:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .video-card-modern video { 
-            width: 100%; 
-            aspect-ratio: 16/9; 
-            background: #000;
+        /* --- VIZ STYLES --- */
+        .viz-grid-container {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            gap: 4px; /* Tighter gap */
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 6px;
         }
         
-        .card-highlight {
-            border: 2px solid #3b82f6; /* Blue border for ours */
-            background: #eff6ff;
+        .block-cell {
+            aspect-ratio: 1 / 1;
+            border-radius: 3px;
+            transition: all 0.2s ease;
             position: relative;
         }
-        .card-badge {
+        
+        .block-cache { background-color: #e2e8f0; border: 1px solid #cbd5e1; }
+        .block-update { background-color: #2563eb; border: 1px solid #1d4ed8; transform: scale(1.05); box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); z-index: 5; }
+        .block-error { background-color: #fee2e2; border: 2px solid #ef4444; position: relative; }
+        .block-corrected { background-color: #22c55e; border: 2px solid #15803d; box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); z-index: 10; }
+
+        /* Bubbling Animation */
+        @keyframes float-up {
+            0% { transform: translateY(0) scale(0.5); opacity: 0.8; }
+            100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+        }
+        
+        .bubble {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #3b82f6;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            z-index: 10;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            top: 50%; left: 50%;
+            width: 12px; height: 12px;
+            background-color: #4ade80;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: float-up 1.2s ease-out forwards;
+            box-shadow: 0 0 4px rgba(74, 222, 128, 0.6);
+            z-index: 20;
         }
 
-        /* --- INTERACTIVE VIZ STYLES (Enhanced) --- */
-        .block-cell {
-            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-            transform-origin: center;
+        /* Status Box */
+        .status-box {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 14px; border-radius: 6px; margin-bottom: 8px;
+            font-size: 0.85rem; font-weight: 600;
         }
-        .block-update { background-color: #2563eb; border-color: #1d4ed8; transform: scale(1.05); z-index: 10; }
-        .block-cache { background-color: #e2e8f0; border-color: #cbd5e1; opacity: 0.5; }
-        .block-error { background-color: #fecaca; border: 2px solid #dc2626; position: relative; animation: shake 0.5s; }
-        .block-corrected { background-color: #4ade80; border: 2px solid #16a34a; transform: scale(1.1); box-shadow: 0 0 10px #4ade80; }
-        
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+        .status-box-success { background-color: #ecfdf5; border: 1px solid #d1fae5; color: #065f46; }
+        .status-box-fail { background-color: #fef2f2; border: 1px solid #fee2e2; color: #991b1b; }
 
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased text-slate-800">
 
-    <!-- === PART 1: HEADER (Tailwind) === -->
+    <!-- === HEADER === -->
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 font-sans">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -185,14 +181,13 @@
             <div class="mt-4 text-lg text-slate-600">Anonymous Authors</div>
             <div class="mt-2 text-sm text-blue-600 font-semibold uppercase tracking-wide">Under Review at ICLR 2026</div>
             <div class="mt-10 flex justify-center gap-4 flex-wrap">
-                <a href="#" class="btn-primary"><i class="fa-solid fa-file-pdf mr-2"></i> Paper</a>
+                <a href="https://openreview.net/pdf?id=c6ZWfQLOWD" target="_blank" class="btn-primary"><i class="fa-solid fa-file-pdf mr-2"></i> Paper</a>
                 <a href="https://anonymous.4open.science/r/Block-wise_Adaptive_Caching-1265" target="_blank" class="btn-secondary"><i class="fa-brands fa-github mr-2"></i> Code</a>
-                <a href="#bibtex" class="btn-secondary"><i class="fa-solid fa-quote-right mr-2"></i> BibTeX</a>
             </div>
         </div>
     </div>
 
-    <!-- === PART 2: ABSTRACT (Card Style) === -->
+    <!-- === ABSTRACT === -->
     <div id="abstract" class="legacy-section pt-10">
         <div class="section-box">
             <h2>Abstract</h2>
@@ -212,74 +207,78 @@
         </div>
     </div>
 
-    <!-- === PART 3: METHOD (Card Style + Scrolling Animation) === -->
+    <!-- === METHODOLOGY (Compact Layout) === -->
     <div id="method" class="legacy-section">
         <div class="section-box">
             <h2>Methodology</h2>
             
-            <p class="mb-8">
-                BAC integrates an <strong>Adaptive Caching Scheduler (ACS)</strong> to allocate block-specific caching schedules and a <strong>Bubbling Union Algorithm (BUA)</strong> to truncate inter-block error propagation.
+            <p class="mb-6 abstract-text">
+                BAC achieves a finer-grained cache schedule by first applying the <strong>Adaptive Caching Scheduler (ACS)</strong> to compute optimal update timesteps for each block and then employing the <strong>Bubbling Union Algorithm (BUA)</strong> to truncate inter-block error propagation.
             </p>
 
-            <!-- Interactive Visualization -->
-            <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden mb-8">
+            <!-- Interactive Container -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden mb-8 shadow-sm">
+                
                 <!-- Controls -->
-                <div class="p-4 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-white">
-                    <h3 class="!mb-0 text-lg !text-slate-800"><i class="fa-solid fa-play-circle mr-2 text-blue-600"></i>Process Simulation</h3>
-                    <div class="flex bg-slate-100 rounded-lg p-1">
-                        <button onclick="runSimulation('uniform')" id="btn-uniform" class="px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-white text-slate-600">Uniform</button>
-                        <button onclick="runSimulation('acs')" id="btn-acs" class="px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-white text-slate-600">ACS</button>
-                        <button onclick="runSimulation('bac')" id="btn-bac" class="px-4 py-2 rounded-md text-sm font-medium transition-colors bg-white text-blue-700 shadow-sm font-bold">BAC (Ours)</button>
+                <div class="p-3 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50">
+                    <h3 class="!mb-0 !text-sm font-bold text-slate-700 uppercase tracking-wider pl-2">
+                        <i class="fa-solid fa-sliders mr-2"></i>Interactive Demo
+                    </h3>
+                    <div class="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
+                        <button onclick="runSimulation('uniform')" id="btn-uniform" class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors hover:bg-slate-50 text-slate-600">Uniform</button>
+                        <button onclick="runSimulation('acs')" id="btn-acs" class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors hover:bg-slate-50 text-slate-600">ACS</button>
+                        <button onclick="runSimulation('bac')" id="btn-bac" class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors bg-blue-600 text-white shadow-md">ACS + BUA</button>
                     </div>
                 </div>
                 
-                <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Viz Grid -->
-                    <div class="lg:col-span-2 relative">
-                        <div class="flex justify-between text-xs font-mono text-slate-500 mb-2 px-1">
-                            <span>Transformer Layers</span>
-                            <span>Time $\rightarrow$</span>
+                <!-- Main Content (Tight Grid) -->
+                <div class="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    
+                    <!-- LEFT: Grid (9 cols) -->
+                    <div class="lg:col-span-9 relative">
+                        <div class="flex justify-between text-xs font-semibold text-slate-400 mb-2 px-1 uppercase tracking-wide">
+                            <span>Blocks <i class="fa-solid fa-arrow-down ml-1"></i></span>
+                            <span>Timesteps <i class="fa-solid fa-arrow-right ml-1"></i></span>
                         </div>
-                        
-                        <!-- The Grid -->
-                        <div id="viz-grid" class="grid gap-1" style="grid-template-columns: repeat(16, minmax(0, 1fr));">
-                            <!-- JS will fill this -->
-                        </div>
-                        
-                        <!-- Legend -->
-                        <div class="mt-4 flex gap-4 text-xs text-slate-600 justify-center flex-wrap">
-                            <div class="flex items-center"><div class="w-3 h-3 bg-blue-600 rounded mr-2"></div> Compute</div>
-                            <div class="flex items-center"><div class="w-3 h-3 bg-slate-200 rounded mr-2"></div> Cache</div>
-                            <div class="flex items-center"><div class="w-3 h-3 bg-red-200 border border-red-500 rounded mr-2"></div> Error</div>
-                            <div class="flex items-center"><div class="w-3 h-3 bg-green-400 border border-green-600 rounded mr-2"></div> Corrected</div>
+                        <div id="viz-grid" class="viz-grid-container">
+                            <!-- JS fills this -->
                         </div>
                     </div>
                     
-                    <!-- Explanation Panel -->
-                    <div class="bg-white rounded-lg p-5 border border-slate-200 shadow-sm flex flex-col justify-center">
-                        <h4 id="viz-title" class="!text-lg !mb-2 text-slate-800 font-bold">BAC (ACS + BUA)</h4>
-                        
-                        <div id="viz-analysis" class="mb-4 text-sm space-y-2 font-mono bg-slate-50 p-3 rounded border border-slate-100">
-                             <!-- Analysis inserted by JS -->
-                        </div>
+                    <!-- RIGHT: Panel (3 cols) - Packed Content -->
+                    <div class="lg:col-span-3 flex flex-col">
+                        <div class="bg-white rounded-lg p-4 border border-slate-100 shadow-sm h-full flex flex-col">
+                            <div class="mb-4">
+                                <h4 id="viz-title" class="!text-lg font-bold text-slate-800 leading-tight">ACS + BUA</h4>
+                                <p id="viz-desc" class="text-xs font-bold text-slate-500 mt-1 italic">Bubbling Union Algorithm</p>
+                            </div>
+                            
+                            <!-- Badges -->
+                            <div id="viz-analysis" class="space-y-2 mb-4"></div>
+                            
+                            <!-- Legend (Moved Here!) -->
+                            <div class="mt-auto border-t border-slate-100 pt-3">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Legend</p>
+                                <div class="grid grid-cols-1 gap-2 text-xs font-medium text-slate-600">
+                                    <div class="flex items-center"><div class="w-3 h-3 bg-blue-600 rounded mr-2 border border-blue-700"></div> Updated Features</div>
+                                    <div class="flex items-center"><div class="w-3 h-3 bg-slate-200 rounded mr-2 border border-slate-300"></div> Skipped Features</div>
+                                    <div class="flex items-center"><div class="w-3 h-3 bg-red-100 border border-red-500 rounded mr-2"></div> Error Surge</div>
+                                    <div class="flex items-center"><div class="w-3 h-3 bg-green-500 border border-green-700 rounded mr-2"></div> Error Correction</div>
+                                </div>
+                            </div>
 
-                        <p id="viz-desc" class="text-sm text-slate-600 leading-relaxed">
-                            Click a button to start the simulation.
-                        </p>
-                        
-                        <div id="viz-status" class="mt-4 text-xs font-mono text-blue-600 bg-blue-50 p-2 rounded hidden">
-                            Processing step <span id="step-count">0</span>...
+                            <div id="viz-status" class="mt-3 text-[10px] font-mono text-blue-600 hidden text-center">
+                                Simulating...
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
 
-    <!-- === PART 4: EXPERIMENTS (Modern Video Grid) === -->
+    <!-- === EXPERIMENTS === -->
     <div id="setup" class="legacy-section pb-10">
-        <!-- Section 1: Task Setup & Hardware -->
         <div class="section-box">
             <h2>Experimental Setup</h2>
             <div class="setup-container">
@@ -295,24 +294,16 @@
                 </div>
 
                 <div class="setup-info">
-                    <h3>Task Description</h3>
-                    <p style="margin-bottom: 20px;">
-                        We evaluate our method on the Pick-and-Release task in a real-world setting. In this task, the robot is required to grasp a soft bag whose diameter is approximately 80% of the gripper’s jaw width.
-                    </p>
-                    
                     <h3>Hardware Setup</h3>
                     <ul class="specs-list">
                         <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D (48 GB)</li>
                         <li><strong>Robot Arm:</strong> Franka Research 3</li>
                         <li><strong>Camera:</strong> UGREEN CM717</li>
-                        <li><strong>Data:</strong> 150 epsiodes collected by Gello</li>
-                        <li><strong>Baseline Model:</strong> Transformer-based Diffusion Policy </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- Section 2: Video Demos (Improved UI) -->
         <div class="section-box">
             <h2>Qualitative Comparisons</h2>
             <p style="margin-bottom: 25px;">
@@ -322,177 +313,84 @@
             <div class="video-grid-modern">
                 <!-- Video 1 -->
                 <div class="video-card-modern">
-                    <video autoplay loop muted playsinline controls>
-                        <source src="videos/DP-s.mp4" type="video/mp4">
-                    </video>
+                    <video autoplay loop muted playsinline controls><source src="videos/DP-s.mp4" type="video/mp4"></video>
                     <div class="p-4 bg-white">
                         <div class="flex justify-between items-center mb-3">
                             <h4 class="text-base font-bold text-slate-800 m-0">DDPM 100 steps</h4>
                             <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-md font-medium">Failure</span>
                         </div>
                         <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
-                                <span class="font-mono text-slate-900">7.8 Hz</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 17%"></div>
-                            </div>
-                            
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
-                                <span class="font-mono text-slate-900">180 s</span>
-                            </div>
-                             <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-red-400 h-1.5 rounded-full" style="width: 100%"></div>
-                            </div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">7.8 Hz</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 17%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">180 s</span></div>
+                             <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-red-400 h-1.5 rounded-full" style="width: 100%"></div></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Video 2 -->
+                 <!-- Video 2 -->
                 <div class="video-card-modern">
-                    <video autoplay loop muted playsinline controls>
-                        <source src="videos/DDPM30-s.mp4" type="video/mp4">
-                    </video>
+                    <video autoplay loop muted playsinline controls><source src="videos/DDPM30-s.mp4" type="video/mp4"></video>
                     <div class="p-4 bg-white">
-                        <div class="flex justify-between items-center mb-3">
-                            <h4 class="text-base font-bold text-slate-800 m-0">DDPM 30 steps</h4>
-                        </div>
+                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-slate-800 m-0">DDPM 30 steps</h4></div>
                         <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
-                                <span class="font-mono text-slate-900">19.4 Hz</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 43%"></div>
-                            </div>
-                            
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
-                                <span class="font-mono text-slate-900">54 s</span>
-                            </div>
-                             <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 30%"></div>
-                            </div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">19.4 Hz</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 43%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">54 s</span></div>
+                             <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 30%"></div></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Video 3 -->
+                 <!-- Video 3 -->
                 <div class="video-card-modern">
-                    <video autoplay loop muted playsinline controls>
-                        <source src="videos/DDIM50-s.mp4" type="video/mp4">
-                    </video>
+                    <video autoplay loop muted playsinline controls><source src="videos/DDIM50-s.mp4" type="video/mp4"></video>
                     <div class="p-4 bg-white">
-                        <div class="flex justify-between items-center mb-3">
-                            <h4 class="text-base font-bold text-slate-800 m-0">DDIM 50 steps</h4>
-                        </div>
+                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-slate-800 m-0">DDIM 50 steps</h4></div>
                         <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
-                                <span class="font-mono text-slate-900">15.6 Hz</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 34%"></div>
-                            </div>
-                            
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
-                                <span class="font-mono text-slate-900">25 s</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 14%"></div>
-                            </div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">15.6 Hz</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 34%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">25 s</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 14%"></div></div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Video 4 -->
                 <div class="video-card-modern">
-                    <video autoplay loop muted playsinline controls>
-                        <source src="videos/Uniform20-s.mp4" type="video/mp4">
-                    </video>
+                    <video autoplay loop muted playsinline controls><source src="videos/Uniform20-s.mp4" type="video/mp4"></video>
                     <div class="p-4 bg-white">
-                        <div class="flex justify-between items-center mb-3">
-                            <h4 class="text-base font-bold text-slate-800 m-0">Uniform S=20</h4>
-                        </div>
+                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-slate-800 m-0">Uniform S=20</h4></div>
                         <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
-                                <span class="font-mono text-slate-900">28.1 Hz</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 62%"></div>
-                            </div>
-                            
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
-                                <span class="font-mono text-slate-900">52 s</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 28%"></div>
-                            </div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">28.1 Hz</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 62%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">52 s</span></div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 28%"></div></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Video 5 (BAC - Highlighted) -->
+                 <!-- Video 5 -->
                 <div class="video-card-modern card-highlight">
                     <div class="card-badge">Ours</div>
-                    <video autoplay loop muted playsinline controls>
-                        <source src="videos/BAC-s.mp4" type="video/mp4">
-                    </video>
+                    <video autoplay loop muted playsinline controls><source src="videos/BAC-s.mp4" type="video/mp4"></video>
                     <div class="p-4 bg-white/50">
-                        <div class="flex justify-between items-center mb-3">
-                            <h4 class="text-base font-bold text-blue-700 m-0">BAC S=7, n=3</h4>
-                        </div>
+                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-blue-700 m-0">BAC S=7</h4></div>
                         <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
-                                <span class="font-mono text-slate-900">39.2 Hz</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 87%"></div>
-                            </div>
-                            
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
-                                <span class="font-mono text-slate-900">15 s</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 8%"></div>
-                            </div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">39.2 Hz</span></div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-blue-600 h-1.5 rounded-full" style="width: 87%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">15 s</span></div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-blue-600 h-1.5 rounded-full" style="width: 8%"></div></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Video 6 (BAC - Highlighted) -->
+                 <!-- Video 6 -->
                 <div class="video-card-modern card-highlight">
                     <div class="card-badge">Ours (Best)</div>
-                    <video autoplay loop muted playsinline controls>
-                        <source src="videos/BAC5-s.mp4" type="video/mp4">
-                    </video>
+                    <video autoplay loop muted playsinline controls><source src="videos/BAC5-s.mp4" type="video/mp4"></video>
                     <div class="p-4 bg-white/50">
-                        <div class="flex justify-between items-center mb-3">
-                            <h4 class="text-base font-bold text-blue-700 m-0">BAC S=5, n=3</h4>
-                        </div>
+                        <div class="flex justify-between items-center mb-3"><h4 class="text-base font-bold text-blue-700 m-0">BAC S=5</h4></div>
                         <div class="space-y-2">
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
-                                <span class="font-mono text-slate-900">45.1 Hz</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 100%"></div>
-                            </div>
-                            
-                            <div class="flex justify-between text-sm text-slate-600">
-                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
-                                <span class="font-mono text-slate-900">13 s</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 7%"></div>
-                            </div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Freq</span> <span class="font-mono text-slate-900">45.1 Hz</span></div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-blue-600 h-1.5 rounded-full" style="width: 100%"></div></div>
+                            <div class="flex justify-between text-sm text-slate-600"><span>Latency</span> <span class="font-mono text-slate-900">13 s</span></div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-blue-600 h-1.5 rounded-full" style="width: 7%"></div></div>
                         </div>
                     </div>
                 </div>
@@ -500,24 +398,13 @@
         </div>
     </div>
 
-    <!-- === PART 5: FOOTER === -->
-    <section id="bibtex" class="py-12 bg-white border-t border-slate-200 font-sans">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-6">BibTeX</h2>
-            <div class="bg-slate-800 rounded-lg p-6 overflow-x-auto">
-                <code class="text-sm text-slate-300 font-mono whitespace-pre">@inproceedings{anonymous2026bac,
-  title={Block-wise Adaptive Caching for Accelerating Diffusion Policy},
-  author={Anonymous Authors},
-  booktitle={Under Review at International Conference on Learning Representations},
-  year={2026}
-}</code>
-            </div>
-        </div>
-    </section>
+    <!-- === FOOTER === -->
+    <footer class="py-8 bg-slate-50 border-t border-slate-200 font-sans text-center text-slate-400 text-sm">
+        <p>Project page template.</p>
+    </footer>
 
     <!-- Scripts -->
     <script>
-        // --- 1. Interactive Viz Logic (Scrolling Animation) ---
         const grid = document.getElementById('viz-grid');
         const rows = 8; const cols = 16;
         let animationInterval = null;
@@ -527,40 +414,64 @@
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     const cell = document.createElement('div');
-                    cell.className = `block-cell w-full h-8 rounded-sm border block-cache bg-slate-100`;
+                    cell.className = `block-cell block-cache`;
                     cell.id = `cell-${r}-${c}`;
                     grid.appendChild(cell);
                 }
             }
         }
 
+        function triggerBubbles(r, c) {
+            const cell = document.getElementById(`cell-${r}-${c}`);
+            if (!cell) return;
+            for (let i = 0; i < 3; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const offsetX = (Math.random() - 0.5) * 10;
+                bubble.style.transform = `translate(-50%, -50%) translateX(${offsetX}px)`;
+                bubble.style.animationDelay = `${i * 0.1}s`;
+                cell.appendChild(bubble);
+                setTimeout(() => bubble.remove(), 1000);
+            }
+        }
+
         function setCell(r, c, type) {
             const cell = document.getElementById(`cell-${r}-${c}`);
             if (!cell) return;
-            // Clear previous states
-            cell.className = `block-cell w-full h-8 rounded-sm border block-cache`;
-            
-            // Add slight random delay for organic feel
+            cell.className = 'block-cell block-cache';
             setTimeout(() => {
-                if (type === 'update') cell.classList.add('block-update');
-                else if (type === 'error') cell.classList.add('block-error');
-                else if (type === 'corrected') cell.classList.add('block-corrected');
-            }, Math.random() * 50);
+                if (type === 'update') {
+                    cell.classList.remove('block-cache');
+                    cell.classList.add('block-update');
+                } else if (type === 'error') {
+                    cell.classList.add('block-error');
+                } else if (type === 'corrected') {
+                    cell.classList.remove('block-cache');
+                    cell.classList.add('block-corrected');
+                }
+            }, 0);
         }
 
         function clearGrid() {
             if (animationInterval) clearInterval(animationInterval);
             const cells = document.querySelectorAll('.block-cell');
-            cells.forEach(c => c.className = 'block-cell w-full h-8 rounded-sm border block-cache bg-slate-100');
+            cells.forEach(c => {
+                c.className = 'block-cell block-cache'; 
+                c.innerHTML = ''; 
+            });
             document.getElementById('viz-status').classList.add('hidden');
         }
 
         function runSimulation(mode) {
-            // UI Update
             document.querySelectorAll('button[id^="btn-"]').forEach(b => {
-                b.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-slate-100 text-slate-600";
+                b.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-colors hover:bg-slate-50 text-slate-600";
             });
-            document.getElementById(`btn-${mode}`).className = "px-4 py-2 rounded-md text-sm font-medium transition-colors bg-slate-900 text-white shadow-sm";
+            const activeBtn = document.getElementById(`btn-${mode}`);
+            if (mode === 'bac') {
+                activeBtn.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-colors bg-blue-600 text-white shadow-md";
+            } else {
+                activeBtn.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-colors bg-slate-800 text-white shadow-md";
+            }
             
             clearGrid();
             
@@ -568,80 +479,90 @@
             const desc = document.getElementById('viz-desc');
             const analysis = document.getElementById('viz-analysis');
             const status = document.getElementById('viz-status');
-            const stepCount = document.getElementById('step-count');
             
             status.classList.remove('hidden');
 
-            // Define patterns & Texts
             let logic = (c, r) => false;
-            let errorStep = -1;
+            let errorSteps = []; 
             
             if (mode === 'uniform') {
                 title.innerText = "Uniform Caching";
+                desc.innerText = "";
                 analysis.innerHTML = `
-                    <div class="flex justify-between items-center text-red-700"><span>Reduce Cache-induced Error</span> <span>No <i class="fa-solid fa-times-circle"></i></span></div>
-                    <div class="flex justify-between items-center text-red-700"><span>Reduce Update-induced Error</span> <span>No <i class="fa-solid fa-times-circle"></i></span></div>
+                    <div class="status-box status-box-fail">
+                        <span>Reduce Cache-induced Error</span>
+                        <i class="fa-solid fa-circle-xmark text-lg"></i>
+                    </div>
+                    <div class="status-box status-box-fail">
+                        <span>Reduce Update-induced Error</span>
+                        <i class="fa-solid fa-circle-xmark text-lg"></i>
+                    </div>
                 `;
-                desc.innerText = "Updates occur at fixed intervals regardless of similarity. High redundancy and missed updates.";
                 logic = (c, r) => c % 4 === 0;
             } else if (mode === 'acs') {
-                title.innerText = "ACS (Adaptive Caching)";
+                title.innerText = "ACS";
+                desc.innerText = "Adaptive Caching Scheduler";
                 analysis.innerHTML = `
-                    <div class="flex justify-between items-center text-green-700"><span>Reduce Cache-induced Error</span> <span>Yes <i class="fa-solid fa-check-circle"></i></span></div>
-                    <div class="flex justify-between items-center text-red-700"><span>Reduce Update-induced Error</span> <span>No <i class="fa-solid fa-times-circle"></i></span></div>
+                    <div class="status-box status-box-success">
+                        <span>Reduce Cache-induced Error</span>
+                        <i class="fa-solid fa-circle-check text-lg"></i>
+                    </div>
+                    <div class="status-box status-box-fail">
+                        <span>Reduce Update-induced Error</span>
+                        <i class="fa-solid fa-circle-xmark text-lg"></i>
+                    </div>
                 `;
-                desc.innerText = "Optimizes schedule to reduce cache error, but allows update errors (Red) to propagate.";
                 logic = (c, r) => {
                     let freq = (r % 2 == 0) ? 3 : 5;
                     return (c + r) % freq == 0;
                 };
-                errorStep = 8;
+                errorSteps = [5, 11]; 
             } else if (mode === 'bac') {
-                title.innerText = "BAC (Ours)";
+                title.innerText = "ACS + BUA";
+                desc.innerText = "Bubbling Union Algorithm";
                 analysis.innerHTML = `
-                    <div class="flex justify-between items-center text-green-700"><span>Reduce Cache-induced Error</span> <span>Yes <i class="fa-solid fa-check-circle"></i></span></div>
-                    <div class="flex justify-between items-center text-green-700"><span>Reduce Update-induced Error</span> <span>Yes <i class="fa-solid fa-check-circle"></i></span></div>
+                    <div class="status-box status-box-success">
+                        <span>Reduce Cache-induced Error</span>
+                        <i class="fa-solid fa-circle-check text-lg"></i>
+                    </div>
+                    <div class="status-box status-box-success">
+                        <span>Reduce Update-induced Error</span>
+                        <i class="fa-solid fa-circle-check text-lg"></i>
+                    </div>
                 `;
-                desc.innerText = "BUA detects potential update errors and corrects them (Green), ensuring high fidelity.";
                 logic = (c, r) => {
                     let freq = (r % 2 == 0) ? 3 : 5;
                     return (c + r) % freq == 0;
                 };
-                errorStep = 8;
+                errorSteps = [5, 11]; 
             }
 
-            // Animation Loop (Left to Right)
             let currentStep = 0;
             animationInterval = setInterval(() => {
                 if (currentStep >= cols) {
                     clearInterval(animationInterval);
                     return;
                 }
-
-                stepCount.innerText = currentStep + 1;
-
                 for (let r = 0; r < rows; r++) {
                     const isUpdate = logic(currentStep, r);
-                    
-                    if (mode === 'acs' && currentStep === errorStep && r === 3) {
-                         // Simulate upstream missed update -> Downstream error
-                         setCell(3, currentStep, 'error'); // Upstream
-                         setCell(4, currentStep, 'update'); // Downstream
-                    } else if (mode === 'bac' && currentStep === errorStep && r === 3) {
-                         // BUA Correction
-                         setCell(3, currentStep, 'corrected'); // Forced Update
+                    const isErrorStep = errorSteps.includes(currentStep);
+                    if (mode === 'acs' && isErrorStep && r === 3) {
+                         setCell(3, currentStep, 'error'); 
+                         setCell(4, currentStep, 'update'); 
+                    } else if (mode === 'bac' && isErrorStep && r === 3) {
+                         setCell(3, currentStep, 'corrected'); 
+                         triggerBubbles(3, currentStep); 
                          setCell(4, currentStep, 'update');
                     } else {
                         if (isUpdate) setCell(r, currentStep, 'update');
                     }
                 }
                 currentStep++;
-            }, 150); // Speed of scrolling
+            }, 150);
         }
 
-        // Init
         createGrid();
-        setTimeout(() => runSimulation('bac'), 500); // Auto start
+        setTimeout(() => runSimulation('bac'), 500);
     </script>
 </body>
 </html>
