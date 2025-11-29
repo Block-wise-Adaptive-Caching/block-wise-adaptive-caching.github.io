@@ -4,473 +4,644 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Block-wise Adaptive Caching for Accelerating Diffusion Policy</title>
-    <!-- Import fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 1. Tailwind CSS (For Header & Interactive Components) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Inter:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 3. Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        /* --- GLOBAL & NEW STYLES (Tailwind Helpers) --- */
         body {
+            background-color: #f8f9fa; 
+            scroll-behavior: smooth;
+        }
+        
+        /* Header Buttons */
+        .btn-primary {
+            @apply inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-slate-900 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200;
+        }
+        .btn-secondary {
+            @apply inline-flex items-center px-6 py-3 border border-slate-300 text-base font-medium rounded-full text-slate-700 bg-white hover:bg-slate-50 transition-all duration-200;
+        }
+
+        /* --- LEGACY STYLES (Unified Section Layout) --- */
+        .legacy-section {
             font-family: 'Roboto', sans-serif;
             line-height: 1.6;
             color: #333;
             max-width: 1100px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
+            padding: 0 20px;
         }
 
-        /* Header Section */
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 40px 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 2.2rem;
-        }
-        .authors {
-            font-size: 1.1em;
-            color: #555;
-            margin-bottom: 10px;
-        }
-        .venue {
-            font-weight: bold;
-            color: #d35400;
-        }
-
-        /* Header Buttons */
-        .header-links {
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        .btn-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #333;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95em;
-            transition: all 0.2s ease;
-            border: 1px solid #333;
-        }
-        
-        .btn-link:hover {
-            background-color: white;
-            color: #333;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .btn-link svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
-        /* General Container Styles */
+        /* Uniform Card Style for ALL Sections */
         .section-box {
             background: white;
             padding: 30px;
             margin-bottom: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            /* Ensure Tailwind content inside looks okay */
+            @apply font-sans; 
         }
-        h2 {
+
+        .legacy-section h2 {
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
             margin-bottom: 20px;
             color: #333;
+            font-size: 1.5em;
+            font-weight: 700;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .legacy-section h3 {
+            font-size: 1.17em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #333;
+            font-family: 'Roboto', sans-serif;
         }
 
         /* Abstract Styles */
-        .abstract-text {
-            text-align: justify;
-            font-size: 1.1em; 
-        }
+        .abstract-text { text-align: justify; font-size: 1.1em; }
         .highlight-list {
-            margin-top: 20px; 
-            list-style: none; 
-            padding-left: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: flex-start; 
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
+            margin-top: 20px; list-style: none; padding-left: 0;
+            display: flex; flex-wrap: wrap; gap: 20px;
+            background: #f8f9fa; padding: 20px; border-radius: 8px;
         }
         .highlight-list li {
-            font-weight: 500;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-weight: 500; color: #2c3e50; display: flex; align-items: center; gap: 8px;
         }
 
-        /* Section 1: Task & Hardware (Layout: Images Top, Text Bottom) */
-        .setup-container {
-            display: flex;
-            flex-direction: column; /* Stack items vertically */
-            gap: 30px;
-        }
-        
-        /* Grid for side-by-side images on top */
-        .setup-images-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Two equal columns */
-            gap: 30px;
-            width: 100%;
-        }
-
-        .setup-image-item {
-            text-align: center;
-        }
-
+        /* Setup & Hardware */
+        .setup-container { display: flex; flex-direction: column; gap: 30px; }
+        .setup-images-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; }
+        .setup-image-item { text-align: center; }
         .setup-image-item img {
-            width: 100%;
-            height: auto;
-            max-height: 450px; /* Slightly increased max-height for top display */
-            object-fit: cover; 
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: block;
-            margin: 0 auto; 
+            width: 100%; height: auto; max-height: 450px; object-fit: cover;
+            border-radius: 4px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: block; margin: 0 auto;
+        }
+        .setup-caption { font-size: 0.95em; color: #555; margin-top: 10px; font-weight: 500; }
+        .specs-list {
+            list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px;
+        }
+        .specs-list li { margin-bottom: 5px; padding-left: 20px; position: relative; }
+        .specs-list li::before { content: "•"; color: #007bff; font-weight: bold; position: absolute; left: 0; }
+
+        /* Video Grid (New Modern Style) */
+        .video-grid-modern { 
+            display: grid; 
+            grid-template-columns: repeat(1, minmax(0, 1fr)); 
+            gap: 2rem; 
+        }
+        @media (min-width: 768px) {
+            .video-grid-modern { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        .video-card-modern {
+            background: #fff; 
+            border-radius: 12px; 
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .video-card-modern:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .video-card-modern video { 
+            width: 100%; 
+            aspect-ratio: 16/9; 
+            background: #000;
         }
         
-        .setup-caption {
-            font-size: 0.95em; 
-            color: #555; 
-            margin-top: 10px;
-            font-weight: 500;
-        }
-
-        .setup-info {
-            width: 100%;
-        }
-
-        .specs-list {
-            list-style: none;
-            padding: 0;
-            /* Make list two columns on wide screens */
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 10px;
-        }
-        .specs-list li {
-            margin-bottom: 5px;
-            padding-left: 20px;
+        .card-highlight {
+            border: 2px solid #3b82f6; /* Blue border for ours */
+            background: #eff6ff;
             position: relative;
         }
-        .specs-list li::before {
-            content: "•";
-            color: #007bff;
-            font-weight: bold;
+        .card-badge {
             position: absolute;
-            left: 0;
+            top: 10px;
+            right: 10px;
+            background: #3b82f6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Section 2: Video Demos (2x2 Grid) */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 20px;
+        /* --- INTERACTIVE VIZ STYLES (Enhanced) --- */
+        .block-cell {
+            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            transform-origin: center;
         }
+        .block-update { background-color: #2563eb; border-color: #1d4ed8; transform: scale(1.05); z-index: 10; }
+        .block-cache { background-color: #e2e8f0; border-color: #cbd5e1; opacity: 0.5; }
+        .block-error { background-color: #fecaca; border: 2px solid #dc2626; position: relative; animation: shake 0.5s; }
+        .block-corrected { background-color: #4ade80; border: 2px solid #16a34a; transform: scale(1.1); box-shadow: 0 0 10px #4ade80; }
         
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .setup-images-row {
-                grid-template-columns: 1fr; /* Stack images on mobile */
-            }
-            .video-grid {
-                grid-template-columns: 1fr;
-            }
-            .specs-list {
-                grid-template-columns: 1fr;
-            }
-        }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
 
-        .video-card {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            transition: transform 0.2s;
-        }
-        .video-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        video {
-            width: 100%;
-            border-radius: 4px;
-            background: #000;
-            aspect-ratio: 16/9; 
-        }
-        
-        /* Styles for bottom three data rows */
-        .metrics-table {
-            width: 100%;
-            margin-top: 10px;
-            font-size: 0.9em;
-            border-collapse: collapse;
-        }
-        .metrics-table td {
-            padding: 4px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .metrics-table tr:last-child td {
-            border-bottom: none;
-        }
-        .metric-label {
-            text-align: left;
-            font-weight: 500;
-            color: #666;
-            width: 40%;
-        }
-        .metric-value {
-            text-align: right;
-            font-weight: 500;
-            color: #333;
-        }
-
-        /* Special Highlight Style: BAC */
-        .highlight-method {
-            font-style: italic;
-            font-weight: bold;
-            color: #dc3545; /* Red */
-        }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
-    <header>
-        <h1>Block-wise Adaptive Caching for Accelerating Diffusion Policy</h1>
-        <div class="authors">Anonymous Authors</div>
-        <div class="venue">Supplementary Material for Rebuttal</div>
-
-        <!-- Code Link Button -->
-        <div class="header-links">
-            <a href="https://anonymous.4open.science/r/Block-wise_Adaptive_Caching-1265" class="btn-link" target="_blank">
-                <!-- GitHub Icon SVG -->
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                View Code
-            </a>
+    <!-- === PART 1: HEADER (Tailwind) === -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 font-sans">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold tracking-tight text-slate-900">BAC <span class="text-slate-400 font-normal">| Project Page</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#abstract" class="text-slate-600 hover:text-blue-600 transition-colors">Abstract</a>
+                    <a href="#method" class="text-slate-600 hover:text-blue-600 transition-colors">Method</a>
+                    <a href="#setup" class="text-slate-600 hover:text-blue-600 transition-colors">Experiments</a>
+                </div>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Abstract Section -->
-    <div class="section-box">
-        <h2>Abstract</h2>
-        <div class="abstract-text">
-            <p style="margin-bottom: 15px;">
-                <strong>Diffusion Policy</strong> has revolutionized robotic control with its ability to model complex multimodal distributions, yet its slow inference speed remains a critical bottleneck for real-time deployment.
-            </p>
-            <p>
-                We introduce <strong>Block-wise Adaptive Caching (BAC)</strong>, a <em>training-free</em> acceleration framework designed specifically for Transformer-based Diffusion Policies. Unlike generic acceleration methods, BAC leverages the unique temporal redundancy of action features in robotic tasks. By adaptively caching and reusing features at the block level, BAC achieves <strong>lossless acceleration</strong>—enabling your robot to react faster and smoother for free!
-            </p>
-            
-            <ul class="highlight-list">
-                <li>🚀 <strong>Real-world Speedup:</strong> Boosts inference frequency from 8Hz → 45Hz for smooth control.</li>
-                <li>🎯 <strong>Lossless Performance:</strong> Maintains high success rates via fine-grained adaptive caching.</li>
-                <li>🔌 <strong>Plug-and-Play Design:</strong> No re-training or fine-tuning required.</li>
-            </ul>
+    <div class="bg-white pt-16 pb-12 sm:pt-24 sm:pb-16 border-b border-slate-100 font-sans">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl tracking-tight font-extrabold text-slate-900 sm:text-5xl md:text-6xl mb-6">
+                <span class="block">Block-wise Adaptive Caching</span>
+                <span class="block text-3xl sm:text-4xl text-slate-500 mt-2">for Accelerating Diffusion Policy</span>
+            </h1>
+            <div class="mt-4 text-lg text-slate-600">Anonymous Authors</div>
+            <div class="mt-2 text-sm text-blue-600 font-semibold uppercase tracking-wide">Under Review at ICLR 2026</div>
+            <div class="mt-10 flex justify-center gap-4 flex-wrap">
+                <a href="#" class="btn-primary"><i class="fa-solid fa-file-pdf mr-2"></i> Paper</a>
+                <a href="https://anonymous.4open.science/r/Block-wise_Adaptive_Caching-1265" target="_blank" class="btn-secondary"><i class="fa-brands fa-github mr-2"></i> Code</a>
+                <a href="#bibtex" class="btn-secondary"><i class="fa-solid fa-quote-right mr-2"></i> BibTeX</a>
+            </div>
         </div>
     </div>
 
-    <!-- Section 1: Task Setup & Hardware -->
-    <div class="section-box">
-        <h2>Experimental Setup</h2>
-        <div class="setup-container">
-            
-            <!-- Top: Side-by-Side Images -->
-            <div class="setup-images-row">
-                <!-- Image 1: Front View -->
-                <div class="setup-image-item">
-                    <img src="images/front_view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Front+View+Image'" alt="Front view">
-                    <p class="setup-caption">Front view</p>
-                </div>
-                
-                <!-- Image 2: Side View -->
-                <div class="setup-image-item">
-                    <img src="images/side_view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Side+View+Image'" alt="Side view">
-                    <p class="setup-caption">Side view</p>
-                </div>
-            </div>
-
-            <!-- Bottom: Task and Hardware Description -->
-            <div class="setup-info">
-                <h3>Task Description</h3>
-                <p style="margin-bottom: 20px;">
-                    We evaluate our method on the Pick-and-Release task in a real-world setting. In this task, the robot is required to grasp a soft bag whose diameter is approximately 80% of the gripper’s jaw width. This scenario poses a challenge to the robot’s real-time manipulation capabilities, particularly in maintaining a stable operating posture and precisely coordinating the timing of the gripper’s opening and closing in high speed, as the bag is prone to toppling during execution.
+    <!-- === PART 2: ABSTRACT (Card Style) === -->
+    <div id="abstract" class="legacy-section pt-10">
+        <div class="section-box">
+            <h2>Abstract</h2>
+            <div class="abstract-text">
+                <p style="margin-bottom: 15px;">
+                    <strong>Diffusion Policy</strong> has revolutionized robotic control with its ability to model complex multimodal distributions, yet its slow inference speed remains a critical bottleneck for real-time deployment.
                 </p>
-                
-                <h3>Hardware Setup</h3>
-                <ul class="specs-list">
-                    <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D (48 GB)</li>
-                    <li><strong>Robot Arm:</strong> Franka Research 3</li>
-                    <li><strong>Camera:</strong> UGREEN CM717</li>
-                    <li><strong>Data:</strong> 150 epsiodes collected by Gello</li>
-                    <li><strong>Baseline Model:</strong> Transformer-based Diffusion Policy </li>
+                <p>
+                    We introduce <strong>Block-wise Adaptive Caching (BAC)</strong>, a <em>training-free</em> acceleration framework designed specifically for Transformer-based Diffusion Policies. Unlike generic acceleration methods, BAC leverages the unique temporal redundancy of action features in robotic tasks. By adaptively caching and reusing features at the block level, BAC achieves <strong>lossless acceleration</strong>—enabling your robot to react faster and smoother for free!
+                </p>
+                <ul class="highlight-list">
+                    <li>🚀 <strong>Real-world Speedup:</strong> Boosts inference frequency from 8Hz → 45Hz for smooth control.</li>
+                    <li>🎯 <strong>Lossless Performance:</strong> Maintains high success rates via fine-grained adaptive caching.</li>
+                    <li>🔌 <strong>Plug-and-Play Design:</strong> No re-training or fine-tuning required.</li>
                 </ul>
             </div>
-
         </div>
     </div>
 
-    <!-- Section 2: Video Demos (2x2 Grid) -->
-    <div class="section-box">
-        <h2>Qualitative Comparisons</h2>
-        <p style="margin-bottom: 20px;">
-            Comparisons of different acceleration methods on the Pick-and-Release task. 
-        </p>
-        
-        <div class="video-grid">
-            <!-- Video 1 -->
-            <div class="video-card">
-                <video autoplay loop muted playsinline controls>
-                    <source src="videos/DP-s.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <table class="metrics-table">
-                    <tr>
-                        <td class="metric-label">Method:</td>
-                        <td class="metric-value">DDPM 100 steps</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">Inference Frequency:</td>
-                        <td class="metric-value">~7.8 Hz</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">End-to-End Latency:</td>
-                        <td class="metric-value">180 s (Failure)</td>
-                    </tr>
-                </table>
+    <!-- === PART 3: METHOD (Card Style + Scrolling Animation) === -->
+    <div id="method" class="legacy-section">
+        <div class="section-box">
+            <h2>Methodology</h2>
+            
+            <p class="mb-8">
+                BAC integrates an <strong>Adaptive Caching Scheduler (ACS)</strong> to allocate block-specific caching schedules and a <strong>Bubbling Union Algorithm (BUA)</strong> to truncate inter-block error propagation.
+            </p>
+
+            <!-- Interactive Visualization -->
+            <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden mb-8">
+                <!-- Controls -->
+                <div class="p-4 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-white">
+                    <h3 class="!mb-0 text-lg !text-slate-800"><i class="fa-solid fa-play-circle mr-2 text-blue-600"></i>Process Simulation</h3>
+                    <div class="flex bg-slate-100 rounded-lg p-1">
+                        <button onclick="runSimulation('uniform')" id="btn-uniform" class="px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-white text-slate-600">Uniform</button>
+                        <button onclick="runSimulation('acs')" id="btn-acs" class="px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-white text-slate-600">ACS</button>
+                        <button onclick="runSimulation('bac')" id="btn-bac" class="px-4 py-2 rounded-md text-sm font-medium transition-colors bg-white text-blue-700 shadow-sm font-bold">BAC (Ours)</button>
+                    </div>
+                </div>
+                
+                <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Viz Grid -->
+                    <div class="lg:col-span-2 relative">
+                        <div class="flex justify-between text-xs font-mono text-slate-500 mb-2 px-1">
+                            <span>Transformer Layers</span>
+                            <span>Time $\rightarrow$</span>
+                        </div>
+                        
+                        <!-- The Grid -->
+                        <div id="viz-grid" class="grid gap-1" style="grid-template-columns: repeat(16, minmax(0, 1fr));">
+                            <!-- JS will fill this -->
+                        </div>
+                        
+                        <!-- Legend -->
+                        <div class="mt-4 flex gap-4 text-xs text-slate-600 justify-center flex-wrap">
+                            <div class="flex items-center"><div class="w-3 h-3 bg-blue-600 rounded mr-2"></div> Compute</div>
+                            <div class="flex items-center"><div class="w-3 h-3 bg-slate-200 rounded mr-2"></div> Cache</div>
+                            <div class="flex items-center"><div class="w-3 h-3 bg-red-200 border border-red-500 rounded mr-2"></div> Error</div>
+                            <div class="flex items-center"><div class="w-3 h-3 bg-green-400 border border-green-600 rounded mr-2"></div> Corrected</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Explanation Panel -->
+                    <div class="bg-white rounded-lg p-5 border border-slate-200 shadow-sm flex flex-col justify-center">
+                        <h4 id="viz-title" class="!text-lg !mb-2 text-slate-800 font-bold">BAC (ACS + BUA)</h4>
+                        
+                        <div id="viz-analysis" class="mb-4 text-sm space-y-2 font-mono bg-slate-50 p-3 rounded border border-slate-100">
+                             <!-- Analysis inserted by JS -->
+                        </div>
+
+                        <p id="viz-desc" class="text-sm text-slate-600 leading-relaxed">
+                            Click a button to start the simulation.
+                        </p>
+                        
+                        <div id="viz-status" class="mt-4 text-xs font-mono text-blue-600 bg-blue-50 p-2 rounded hidden">
+                            Processing step <span id="step-count">0</span>...
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="video-card">
-                <video autoplay loop muted playsinline controls>
-                    <source src="videos/DDPM30-s.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <table class="metrics-table">
-                    <tr>
-                        <td class="metric-label">Method:</td>
-                        <td class="metric-value">DDPM 30 steps</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">Inference Frequency:</td>
-                        <td class="metric-value">~19.4 Hz</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">End-to-End Latency:</td>
-                        <td class="metric-value">54 s</td>
-                    </tr>
-                </table>
-            </div>
-
-
-            <!-- Video 3 -->
-            <div class="video-card">
-                <video autoplay loop muted playsinline controls>
-                    <source src="videos/DDIM50-s.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <table class="metrics-table">
-                    <tr>
-                        <td class="metric-label">Method:</td>
-                        <td class="metric-value">DDIM 50 steps</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">Inference Frequency:</td>
-                        <td class="metric-value">~15.6 Hz</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">End-to-End Latency:</td>
-                        <td class="metric-value">25 s</td>
-                    </tr>
-                </table>
-            </div>
-
-            <!-- Video 4 -->
-            <div class="video-card">
-                <video autoplay loop muted playsinline controls>
-                    <source src="videos/Uniform20-s.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <table class="metrics-table">
-                    <tr>
-                        <td class="metric-label">Method:</td>
-                        <td class="metric-value">Uniform S=20</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">Inference Frequency:</td>
-                        <td class="metric-value">~28.1 Hz</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">End-to-End Latency:</td>
-                        <td class="metric-value">52 s</td>
-                    </tr>
-                </table>
-            </div>
-
-            <!-- Video 5 (BAC - Highlighted) -->
-            <div class="video-card">
-                <video autoplay loop muted playsinline controls>
-                    <source src="videos/BAC-s.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <table class="metrics-table">
-                    <tr>
-                        <td class="metric-label">Method:</td>
-                        <td class="metric-value highlight-method">BAC S=7, n=3</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">Inference Frequency:</td>
-                        <td class="metric-value">~39.2 Hz</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">End-to-End Latency:</td>
-                        <td class="metric-value">15 s</td>
-                    </tr>
-                </table>
-            </div>
-
-            <!-- Video 6 (BAC - Highlighted) -->
-            <div class="video-card">
-                <video autoplay loop muted playsinline controls>
-                    <source src="videos/BAC5-s.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <table class="metrics-table">
-                    <tr>
-                        <td class="metric-label">Method:</td>
-                        <td class="metric-value highlight-method">BAC S=5, n=3</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">Inference Frequency:</td>
-                        <td class="metric-value">~45.1 Hz</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-label">End-to-End Latency:</td>
-                        <td class="metric-value">13 s</td>
-                    </tr>
-                </table>
-            </div>
-
+            
         </div>
     </div>
 
+    <!-- === PART 4: EXPERIMENTS (Modern Video Grid) === -->
+    <div id="setup" class="legacy-section pb-10">
+        <!-- Section 1: Task Setup & Hardware -->
+        <div class="section-box">
+            <h2>Experimental Setup</h2>
+            <div class="setup-container">
+                <div class="setup-images-row">
+                    <div class="setup-image-item">
+                        <img src="images/front_view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Front+View+Image'" alt="Front view">
+                        <p class="setup-caption">Front view</p>
+                    </div>
+                    <div class="setup-image-item">
+                        <img src="images/side_view.jpg" onerror="this.src='https://via.placeholder.com/500x350?text=Side+View+Image'" alt="Side view">
+                        <p class="setup-caption">Side view</p>
+                    </div>
+                </div>
+
+                <div class="setup-info">
+                    <h3>Task Description</h3>
+                    <p style="margin-bottom: 20px;">
+                        We evaluate our method on the Pick-and-Release task in a real-world setting. In this task, the robot is required to grasp a soft bag whose diameter is approximately 80% of the gripper’s jaw width.
+                    </p>
+                    
+                    <h3>Hardware Setup</h3>
+                    <ul class="specs-list">
+                        <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D (48 GB)</li>
+                        <li><strong>Robot Arm:</strong> Franka Research 3</li>
+                        <li><strong>Camera:</strong> UGREEN CM717</li>
+                        <li><strong>Data:</strong> 150 epsiodes collected by Gello</li>
+                        <li><strong>Baseline Model:</strong> Transformer-based Diffusion Policy </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Video Demos (Improved UI) -->
+        <div class="section-box">
+            <h2>Qualitative Comparisons</h2>
+            <p style="margin-bottom: 25px;">
+                Comparisons of different acceleration methods on the Pick-and-Release task. <span class="text-blue-600 font-semibold">BAC methods achieve high frequency with low latency.</span>
+            </p>
+            
+            <div class="video-grid-modern">
+                <!-- Video 1 -->
+                <div class="video-card-modern">
+                    <video autoplay loop muted playsinline controls>
+                        <source src="videos/DP-s.mp4" type="video/mp4">
+                    </video>
+                    <div class="p-4 bg-white">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-base font-bold text-slate-800 m-0">DDPM 100 steps</h4>
+                            <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-md font-medium">Failure</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
+                                <span class="font-mono text-slate-900">7.8 Hz</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 17%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
+                                <span class="font-mono text-slate-900">180 s</span>
+                            </div>
+                             <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="bg-red-400 h-1.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div class="video-card-modern">
+                    <video autoplay loop muted playsinline controls>
+                        <source src="videos/DDPM30-s.mp4" type="video/mp4">
+                    </video>
+                    <div class="p-4 bg-white">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-base font-bold text-slate-800 m-0">DDPM 30 steps</h4>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
+                                <span class="font-mono text-slate-900">19.4 Hz</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 43%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
+                                <span class="font-mono text-slate-900">54 s</span>
+                            </div>
+                             <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 3 -->
+                <div class="video-card-modern">
+                    <video autoplay loop muted playsinline controls>
+                        <source src="videos/DDIM50-s.mp4" type="video/mp4">
+                    </video>
+                    <div class="p-4 bg-white">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-base font-bold text-slate-800 m-0">DDIM 50 steps</h4>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
+                                <span class="font-mono text-slate-900">15.6 Hz</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 34%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
+                                <span class="font-mono text-slate-900">25 s</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 14%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 4 -->
+                <div class="video-card-modern">
+                    <video autoplay loop muted playsinline controls>
+                        <source src="videos/Uniform20-s.mp4" type="video/mp4">
+                    </video>
+                    <div class="p-4 bg-white">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-base font-bold text-slate-800 m-0">Uniform S=20</h4>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
+                                <span class="font-mono text-slate-900">28.1 Hz</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 62%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
+                                <span class="font-mono text-slate-900">52 s</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="bg-slate-400 h-1.5 rounded-full" style="width: 28%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 5 (BAC - Highlighted) -->
+                <div class="video-card-modern card-highlight">
+                    <div class="card-badge">Ours</div>
+                    <video autoplay loop muted playsinline controls>
+                        <source src="videos/BAC-s.mp4" type="video/mp4">
+                    </video>
+                    <div class="p-4 bg-white/50">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-base font-bold text-blue-700 m-0">BAC S=7, n=3</h4>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
+                                <span class="font-mono text-slate-900">39.2 Hz</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 87%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
+                                <span class="font-mono text-slate-900">15 s</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 8%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 6 (BAC - Highlighted) -->
+                <div class="video-card-modern card-highlight">
+                    <div class="card-badge">Ours (Best)</div>
+                    <video autoplay loop muted playsinline controls>
+                        <source src="videos/BAC5-s.mp4" type="video/mp4">
+                    </video>
+                    <div class="p-4 bg-white/50">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-base font-bold text-blue-700 m-0">BAC S=5, n=3</h4>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-gauge-high mr-1"></i> Inference Frequency</span>
+                                <span class="font-mono text-slate-900">45.1 Hz</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-sm text-slate-600">
+                                <span><i class="fa-solid fa-hourglass-half mr-1"></i> End-to-End Latency</span>
+                                <span class="font-mono text-slate-900">13 s</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 7%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === PART 5: FOOTER === -->
+    <section id="bibtex" class="py-12 bg-white border-t border-slate-200 font-sans">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">BibTeX</h2>
+            <div class="bg-slate-800 rounded-lg p-6 overflow-x-auto">
+                <code class="text-sm text-slate-300 font-mono whitespace-pre">@inproceedings{anonymous2026bac,
+  title={Block-wise Adaptive Caching for Accelerating Diffusion Policy},
+  author={Anonymous Authors},
+  booktitle={Under Review at International Conference on Learning Representations},
+  year={2026}
+}</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script>
+        // --- 1. Interactive Viz Logic (Scrolling Animation) ---
+        const grid = document.getElementById('viz-grid');
+        const rows = 8; const cols = 16;
+        let animationInterval = null;
+
+        function createGrid() {
+            grid.innerHTML = '';
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = `block-cell w-full h-8 rounded-sm border block-cache bg-slate-100`;
+                    cell.id = `cell-${r}-${c}`;
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        function setCell(r, c, type) {
+            const cell = document.getElementById(`cell-${r}-${c}`);
+            if (!cell) return;
+            // Clear previous states
+            cell.className = `block-cell w-full h-8 rounded-sm border block-cache`;
+            
+            // Add slight random delay for organic feel
+            setTimeout(() => {
+                if (type === 'update') cell.classList.add('block-update');
+                else if (type === 'error') cell.classList.add('block-error');
+                else if (type === 'corrected') cell.classList.add('block-corrected');
+            }, Math.random() * 50);
+        }
+
+        function clearGrid() {
+            if (animationInterval) clearInterval(animationInterval);
+            const cells = document.querySelectorAll('.block-cell');
+            cells.forEach(c => c.className = 'block-cell w-full h-8 rounded-sm border block-cache bg-slate-100');
+            document.getElementById('viz-status').classList.add('hidden');
+        }
+
+        function runSimulation(mode) {
+            // UI Update
+            document.querySelectorAll('button[id^="btn-"]').forEach(b => {
+                b.className = "px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-slate-100 text-slate-600";
+            });
+            document.getElementById(`btn-${mode}`).className = "px-4 py-2 rounded-md text-sm font-medium transition-colors bg-slate-900 text-white shadow-sm";
+            
+            clearGrid();
+            
+            const title = document.getElementById('viz-title');
+            const desc = document.getElementById('viz-desc');
+            const analysis = document.getElementById('viz-analysis');
+            const status = document.getElementById('viz-status');
+            const stepCount = document.getElementById('step-count');
+            
+            status.classList.remove('hidden');
+
+            // Define patterns & Texts
+            let logic = (c, r) => false;
+            let errorStep = -1;
+            
+            if (mode === 'uniform') {
+                title.innerText = "Uniform Caching";
+                analysis.innerHTML = `
+                    <div class="flex justify-between items-center text-red-700"><span>Reduce Cache-induced Error</span> <span>No <i class="fa-solid fa-times-circle"></i></span></div>
+                    <div class="flex justify-between items-center text-red-700"><span>Reduce Update-induced Error</span> <span>No <i class="fa-solid fa-times-circle"></i></span></div>
+                `;
+                desc.innerText = "Updates occur at fixed intervals regardless of similarity. High redundancy and missed updates.";
+                logic = (c, r) => c % 4 === 0;
+            } else if (mode === 'acs') {
+                title.innerText = "ACS (Adaptive Caching)";
+                analysis.innerHTML = `
+                    <div class="flex justify-between items-center text-green-700"><span>Reduce Cache-induced Error</span> <span>Yes <i class="fa-solid fa-check-circle"></i></span></div>
+                    <div class="flex justify-between items-center text-red-700"><span>Reduce Update-induced Error</span> <span>No <i class="fa-solid fa-times-circle"></i></span></div>
+                `;
+                desc.innerText = "Optimizes schedule to reduce cache error, but allows update errors (Red) to propagate.";
+                logic = (c, r) => {
+                    let freq = (r % 2 == 0) ? 3 : 5;
+                    return (c + r) % freq == 0;
+                };
+                errorStep = 8;
+            } else if (mode === 'bac') {
+                title.innerText = "BAC (Ours)";
+                analysis.innerHTML = `
+                    <div class="flex justify-between items-center text-green-700"><span>Reduce Cache-induced Error</span> <span>Yes <i class="fa-solid fa-check-circle"></i></span></div>
+                    <div class="flex justify-between items-center text-green-700"><span>Reduce Update-induced Error</span> <span>Yes <i class="fa-solid fa-check-circle"></i></span></div>
+                `;
+                desc.innerText = "BUA detects potential update errors and corrects them (Green), ensuring high fidelity.";
+                logic = (c, r) => {
+                    let freq = (r % 2 == 0) ? 3 : 5;
+                    return (c + r) % freq == 0;
+                };
+                errorStep = 8;
+            }
+
+            // Animation Loop (Left to Right)
+            let currentStep = 0;
+            animationInterval = setInterval(() => {
+                if (currentStep >= cols) {
+                    clearInterval(animationInterval);
+                    return;
+                }
+
+                stepCount.innerText = currentStep + 1;
+
+                for (let r = 0; r < rows; r++) {
+                    const isUpdate = logic(currentStep, r);
+                    
+                    if (mode === 'acs' && currentStep === errorStep && r === 3) {
+                         // Simulate upstream missed update -> Downstream error
+                         setCell(3, currentStep, 'error'); // Upstream
+                         setCell(4, currentStep, 'update'); // Downstream
+                    } else if (mode === 'bac' && currentStep === errorStep && r === 3) {
+                         // BUA Correction
+                         setCell(3, currentStep, 'corrected'); // Forced Update
+                         setCell(4, currentStep, 'update');
+                    } else {
+                        if (isUpdate) setCell(r, currentStep, 'update');
+                    }
+                }
+                currentStep++;
+            }, 150); // Speed of scrolling
+        }
+
+        // Init
+        createGrid();
+        setTimeout(() => runSimulation('bac'), 500); // Auto start
+    </script>
 </body>
 </html>
