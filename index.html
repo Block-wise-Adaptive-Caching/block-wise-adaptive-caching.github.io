@@ -485,10 +485,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div id="viz-status" class="mt-3 text-[10px] font-mono hidden text-center" style="color: #6b8ec7;">
-                                Simulating...
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -686,7 +682,7 @@
                 c.className = 'block-cell block-cache'; 
                 c.innerHTML = ''; 
             });
-            document.getElementById('viz-status').classList.add('hidden');
+            // document.getElementById('viz-status').classList.add('hidden');
         }
 
         function runSimulation(mode) {
@@ -705,9 +701,9 @@
             const title = document.getElementById('viz-title');
             const desc = document.getElementById('viz-desc');
             const analysis = document.getElementById('viz-analysis');
-            const status = document.getElementById('viz-status');
+            // const status = document.getElementById('viz-status');
             
-            status.classList.remove('hidden');
+            // status.classList.remove('hidden');
 
             let logic = (c, r) => false;
             let errorSteps = []; 
@@ -728,7 +724,7 @@
                 logic = (c, r) => c % 4 === 0;
             } else if (mode === 'acs') {
                 title.innerText = "ACS";
-                desc.innerText = "Adaptive Caching Scheduler";
+                desc.innerText = "";
                 analysis.innerHTML = `
                     <div class="status-box status-box-success">
                         <span>Reduce Cache-induced Error</span>
@@ -746,7 +742,7 @@
                 errorSteps = [5, 11]; 
             } else if (mode === 'bac') {
                 title.innerText = "ACS + BUA";
-                desc.innerText = "Bubbling Union Algorithm";
+                desc.innerText = "";
                 analysis.innerHTML = `
                     <div class="status-box status-box-success">
                         <span>Reduce Cache-induced Error</span>
