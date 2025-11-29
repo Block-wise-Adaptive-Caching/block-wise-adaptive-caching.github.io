@@ -11,7 +11,7 @@
     <!-- 2. Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Inter:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Inter:wght@300;400;500;600;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <!-- 3. Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,12 +23,92 @@
             scroll-behavior: smooth;
         }
         
-        /* Buttons */
-        .btn-primary {
-            @apply inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-slate-900 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200;
+        /* --- NEW ADVANCED BUTTONS --- */
+        .btn-modern-primary {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.85rem 2rem; /* Slightly larger padding */
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: white;
+            /* Deep gradient background */
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 9999px;
+            /* Sophisticated shadow stack: offset shadow + colored glow + internal highlight */
+            box-shadow: 
+                0 4px 6px -1px rgba(15, 23, 42, 0.2), 
+                0 10px 15px -3px rgba(15, 23, 42, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            letter-spacing: 0.01em;
         }
-        .btn-secondary {
-            @apply inline-flex items-center px-6 py-3 border border-slate-300 text-base font-medium rounded-full text-slate-700 bg-white hover:bg-slate-50 transition-all duration-200;
+
+        /* Shine effect wrapper for primary button */
+        .btn-modern-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-modern-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 20px 25px -5px rgba(15, 23, 42, 0.4), 
+                0 8px 10px -6px rgba(15, 23, 42, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-modern-primary:hover::before {
+            left: 100%; /* Slide shine across */
+        }
+        
+        .btn-modern-primary i {
+            transition: transform 0.3s ease;
+        }
+        .btn-modern-primary:hover i {
+            transform: translateY(-2px); /* Icon bounce */
+        }
+
+        .btn-modern-secondary {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.85rem 2rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #334155;
+            background: white;
+            border-radius: 9999px;
+            /* Clean border and subtle shadow */
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-modern-secondary:hover {
+            color: #0f172a;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            background: #f8fafc;
+            box-shadow: 
+                0 10px 15px -3px rgba(0, 0, 0, 0.05),
+                0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+        
+        .btn-modern-secondary i {
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .btn-modern-secondary:hover i {
+            color: #0f172a; /* Darken icon on hover */
         }
 
         /* --- LEGACY SECTION STYLES (Card Layout) --- */
@@ -178,12 +258,21 @@
                 <span class="block">Block-wise Adaptive Caching</span>
                 <span class="block text-3xl sm:text-4xl text-slate-500 mt-2">for Accelerating Diffusion Policy</span>
             </h1>
-            <div class="mt-4 text-lg text-slate-600">Anonymous Authors</div>
             <div class="mt-2 text-sm text-blue-600 font-semibold uppercase tracking-wide">Under Review at ICLR 2026</div>
-            <div class="mt-10 flex justify-center gap-4 flex-wrap">
-                <a href="https://openreview.net/pdf?id=c6ZWfQLOWD" target="_blank" class="btn-primary"><i class="fa-solid fa-file-pdf mr-2"></i> Paper</a>
-                <a href="https://anonymous.4open.science/r/Block-wise_Adaptive_Caching-1265" target="_blank" class="btn-secondary"><i class="fa-brands fa-github mr-2"></i> Code</a>
+            
+            <!-- UPDATED BUTTON SECTION -->
+            <div class="mt-12 flex justify-center gap-5 flex-wrap">
+                <a href="https://openreview.net/pdf?id=c6ZWfQLOWD" target="_blank" class="btn-modern-primary group">
+                    <i class="fa-solid fa-file-pdf mr-3 text-lg"></i> 
+                    <span>Read Paper</span>
+                </a>
+                <a href="https://anonymous.4open.science/r/Block-wise_Adaptive_Caching-1265" target="_blank" class="btn-modern-secondary group">
+                    <i class="fa-brands fa-github mr-3 text-xl"></i> 
+                    <span>View Code</span>
+                </a>
             </div>
+            <!-- END BUTTON SECTION -->
+
         </div>
     </div>
 
@@ -293,12 +382,20 @@
                     </div>
                 </div>
 
+                <!-- ADDED TASK DESCRIPTION -->
+                <div class="setup-info">
+                    <h3>Task Description</h3>
+                    <p style="margin-bottom: 20px;">
+                        We evaluate our method on the Pick-and-Release task in a real-world setting. In this task, the robot is required to grasp a soft bag whose diameter is approximately 80% of the gripper’s jaw width. This scenario poses a challenge to the robot’s real-time manipulation capabilities, particularly in maintaining a stable operating posture and precisely coordinating the timing of the gripper’s opening and closing in high speed, as the bag is prone to toppling during execution.
+                    </p>
+                </div>
+
                 <div class="setup-info">
                     <h3>Hardware Setup</h3>
                     <ul class="specs-list">
-                        <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D (48 GB)</li>
                         <li><strong>Robot Arm:</strong> Franka Research 3</li>
                         <li><strong>Camera:</strong> UGREEN CM717</li>
+                        <li><strong>GPU:</strong> NVIDIA GeForce RTX 4090D 48 GB</li>
                     </ul>
                 </div>
             </div>
